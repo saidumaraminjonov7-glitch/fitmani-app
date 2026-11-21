@@ -1,0 +1,424 @@
+<!-- ... existing code ... -->
+  <style>
+    :root {
+      --spot-red: #e32636;
+      --spot-red-deep: #a8101d;
+      --spot-red-bright: #ff3848;
+      --spot-color: #090909;
+      --spot-opacity: 0.42;
+      --amber: #f7b519;
+      --amber-text: #1b1404;
+      --white: #ffffff;
+      --card-red: #b81220;
+      --card-red-2: #990d19;
+      --ink-dark: #181818;
+      --ink-muted: #52525b;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body.spot-green {
+      --spot-color: #10b94b;
+      --spot-opacity: 0.48;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 118, 128, 0.34), transparent 52%),
+        linear-gradient(180deg, #e52737 0%, #c91828 54%, #a6101d 100%);
+      color: var(--white);
+      min-height: 100vh;
+      padding: 14px 14px 118px;
+      overflow-x: hidden;
+    }
+
+    /* Bold organic Dalmatian spots layer behind cards */
+    .dalmatian-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .d-spot {
+      position: absolute;
+      background: var(--spot-color);
+      opacity: var(--spot-opacity);
+      transition: background-color 0.35s var(--ease), opacity 0.35s var(--ease), transform 0.55s var(--spring);
+      animation: spotDrift 8s ease-in-out infinite alternate;
+    }
+
+    .dalmatian-bg.pulse-spots .d-spot {
+      animation: spotPulseKick 0.55s var(--spring), spotDrift 8s ease-in-out infinite alternate;
+    }
+
+    .d-spot.s1 {
+      width: 112px;
+      height: 86px;
+      top: 3%;
+      left: -24px;
+      border-radius: 62% 38% 55% 45% / 48% 64% 36% 52%;
+      transform: rotate(-18deg);
+    }
+
+    .d-spot.s2 {
+      width: 54px;
+      height: 44px;
+      top: 11%;
+      left: 28%;
+      border-radius: 44% 56% 39% 61% / 57% 41% 59% 43%;
+      animation-delay: -1.4s;
+    }
+
+    .d-spot.s3 {
+      width: 124px;
+      height: 92px;
+      top: 5%;
+      right: -30px;
+      border-radius: 41% 59% 35% 65% / 60% 38% 62% 40%;
+      transform: rotate(22deg);
+      animation-delay: -2.8s;
+    }
+
+    .d-spot.s4 {
+      width: 44px;
+      height: 36px;
+      top: 24%;
+      right: 6%;
+      border-radius: 62% 38% 48% 52% / 42% 58% 42% 58%;
+      animation-delay: -3.5s;
+    }
+
+    .d-spot.s5 {
+      width: 96px;
+      height: 74px;
+      top: 37%;
+      left: -26px;
+      border-radius: 52% 48% 63% 37% / 47% 53% 47% 53%;
+      animation-delay: -4.2s;
+    }
+
+    .d-spot.s6 {
+      width: 72px;
+      height: 56px;
+      top: 50%;
+      right: -18px;
+      border-radius: 38% 62% 55% 45% / 54% 46% 54% 46%;
+      animation-delay: -2.1s;
+    }
+
+    .d-spot.s7 {
+      width: 108px;
+      height: 82px;
+      bottom: 22%;
+      left: -26px;
+      border-radius: 64% 36% 42% 58% / 48% 61% 39% 52%;
+      animation-delay: -5.1s;
+    }
+
+    .d-spot.s8 {
+      width: 48px;
+      height: 38px;
+      bottom: 17%;
+      left: 34%;
+      border-radius: 47% 53% 60% 40% / 56% 44% 56% 44%;
+      animation-delay: -1.8s;
+    }
+
+    .d-spot.s9 {
+      width: 98px;
+      height: 76px;
+      bottom: 15%;
+      right: -22px;
+      border-radius: 49% 51% 37% 63% / 62% 39% 61% 38%;
+      animation-delay: -3.9s;
+    }
+
+    body > *:not(.dalmatian-bg):not(.toast):not(.dock-wrap) {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes spotDrift {
+      0% { translate: 0px 0px; }
+      100% { translate: 5px -7px; }
+    }
+
+    @keyframes spotPulseKick {
+      0% { scale: 1; }
+      45% { scale: 1.14; }
+      100% { scale: 1; }
+    }
+
+    /* Springy tactile animations */
+    button, .step-card, .ex-row, .track-row, .choice-card, .mood-chip, .preset-chip {
+      transition:
+        transform 0.24s var(--spring),
+        background-color 0.2s var(--ease),
+        box-shadow 0.2s var(--ease),
+        border-color 0.2s var(--ease);
+    }
+
+    button:hover, .step-card:hover, .ex-row:hover, .track-row:hover, .choice-card:hover, .mood-chip:hover, .preset-chip:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active, .step-card:active, .ex-row:active, .track-row:active, .choice-card:active, .mood-chip:active, .preset-chip:active {
+      transform: scale(0.94);
+    }
+
+    button.btn-kick {
+      animation: spotKick 0.38s var(--spring);
+    }
+
+    @keyframes spotKick {
+      0% { transform: scale(0.92); }
+      45% { transform: scale(1.06) translateY(-2px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    /* Top Bar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      animation: fadeDown 0.4s var(--ease) both;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: var(--white);
+      color: var(--spot-red);
+      font-weight: 900;
+      font-size: 21px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 16px rgba(60, 4, 9, 0.35);
+      overflow: hidden;
+    }
+
+    .brand-icon::after {
+      content: "";
+      position: absolute;
+      width: 13px;
+      height: 11px;
+      top: 4px;
+      right: 4px;
+      border-radius: 60% 40% 50% 50% / 45% 60% 40% 55%;
+      background: var(--spot-color);
+      opacity: 0.92;
+      transition: background-color 0.3s var(--ease);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      color: var(--white);
+    }
+
+    .brand span {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .spot-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--white);
+      color: var(--ink-dark);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 11.5px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.24);
+    }
+
+    .spot-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%;
+      background: var(--spot-color);
+      display: inline-block;
+      transition: background-color 0.3s var(--ease);
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 3px;
+      background: rgba(28, 25, 25, 0.48);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      padding: 3px;
+    }
+<!-- ... existing code ... -->
+    <span class="d-spot s9"></span>
+  </div>
+
+  <div class="toast" id="toast">Saqlandi!</div>
+  <!-- Hidden real HTML5 Audio element for online & local tracks -->
+  <audio id="real-audio" preload="none"></audio>
+
+  <!-- Top Header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">F</div>
+      <div>
+        <strong>FITMANI</strong>
+        <span id="t-tagline">Shaxsiy sog‘lom odat va AI ratsion</span>
+      </div>
+    </div>
+    <div class="top-controls">
+      <button class="spot-toggle-btn" id="btn-spot-toggle" onclick="toggleSpotColor()" title="Dog‘ rangini o‘zgartirish">
+        <span class="spot-dot" id="spot-dot-ic"></span>
+        <span id="spot-toggle-label">Qora dog‘</span>
+      </button>
+      <div class="lang-switch">
+        <button class="active" onclick="setLang('uz', this)">UZ</button>
+        <button onclick="setLang('ru', this)">RU</button>
+        <button onclick="setLang('en', this)">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Overview Card -->
+<!-- ... existing code ... -->
+      sched: "normal",
+      age: 27,
+      weight: 75,
+      streak: 0,
+      spotMode: "black",
+      foodLog: []
+    };
+
+    const RING_CIRC = 2 * Math.PI * 76;
+    let totalSec = 32 * 60;
+    let left = totalSec;
+    let tid = null;
+    let on = false;
+
+    function applySpotMode() {
+      const isGreen = st.spotMode === "green";
+      document.body.classList.toggle("spot-green", isGreen);
+      const d = L[st.lang] || L.uz;
+      const lbl = document.getElementById("spot-toggle-label");
+      if (lbl) lbl.textContent = isGreen ? d.spotGreen : d.spotBlack;
+    }
+
+    function triggerSpotPulse() {
+      const bg = document.querySelector(".dalmatian-bg");
+      if (!bg) return;
+      bg.classList.remove("pulse-spots");
+      void bg.offsetWidth;
+      bg.classList.add("pulse-spots");
+    }
+
+    function toggleSpotColor() {
+      st.spotMode = st.spotMode === "green" ? "black" : "green";
+      localStorage.setItem("fitmani_cola_v2", JSON.stringify(st));
+      applySpotMode();
+      triggerSpotPulse();
+      haptic("success");
+      const d = L[st.lang] || L.uz;
+      showToast(st.spotMode === "green" ? d.spotGreenMsg : d.spotBlackMsg);
+    }
+
+    function haptic(type = "light") {
+      if (!tg || !tg.HapticFeedback) return;
+      if (type === "success") tg.HapticFeedback.notificationOccurred("success");
+      else tg.HapticFeedback.impactOccurred(type);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    const L = {
+      uz: {
+        tagline: "Shaxsiy sog‘lom odat va AI ratsion",
+        spotBlack: "Qora dog‘",
+        spotGreen: "Yashil dog‘",
+        spotBlackMsg: "Qop-qora Dalmatin dog‘lar yoqildi!",
+        spotGreenMsg: "Yam-yashil Dalmatin dog‘lar yoqildi!",
+        hello: (n) => `Salom, ${n || "Do‘stim"}!`,
+<!-- ... existing code ... -->
+      ru: {
+        tagline: "Помощник привычек и AI-рацион",
+        spotBlack: "Чёрные пятна",
+        spotGreen: "Зелёные пятна",
+        spotBlackMsg: "Включены чёрные далматин-пятна!",
+        spotGreenMsg: "Включены зелёные далматин-пятна!",
+        hello: (n) => `Привет, ${n || "Друг"}!`,
+<!-- ... existing code ... -->
+      en: {
+        tagline: "Personal habit & AI nutrition guide",
+        spotBlack: "Black Spots",
+        spotGreen: "Green Spots",
+        spotBlackMsg: "Pitch-black Dalmatian spots enabled!",
+        spotGreenMsg: "Vibrant green Dalmatian spots enabled!",
+        hello: (n) => `Hi, ${n || "Friend"}!`,
+<!-- ... existing code ... -->
+    function render() {
+      const d = L[st.lang];
+      applySpotMode();
+      document.getElementById("t-tagline").textContent = d.tagline;
+      document.getElementById("t-hello").textContent = d.hello(uname);
+<!-- ... existing code ... -->
+    // Spring kick animation on every button click + subtle spot pulse
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      btn.classList.remove("btn-kick");
+      void btn.offsetWidth;
+      btn.classList.add("btn-kick");
+      triggerSpotPulse();
+    });
+
+    // Initialize app state
+    document.getElementById("i-age").value = st.age;
+    document.getElementById("i-weight").value = st.weight;
+    applySpotMode();
+    resetClock();
+    render();
+    renderFoodLog();
+    searchMusic("workout phonk energy");
+  </script>
+</body>
+</html>

@@ -3,22 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FITMANI — 5D Fitness Mini App</title>
+  <title>FITMANI — Shaxsiy sog‘lom odat va AI ratsion</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg-void: #030404;
-      --bg-panel: rgba(12, 18, 15, 0.72);
-      --bg-panel-hover: rgba(18, 28, 23, 0.88);
-      --neon: #18e068;
-      --neon-soft: rgba(24, 224, 104, 0.16);
-      --neon-glow: 0 0 24px rgba(24, 224, 104, 0.35);
-      --accent-amber: #ffb830;
-      --text-main: #f3fff7;
-      --text-muted: #8ca396;
-      --border: rgba(24, 224, 104, 0.22);
-      --px: 0px;
-      --py: 0px;
+      --spot-red: #e32636;
+      --spot-red-deep: #a8101d;
+      --spot-red-bright: #ff3848;
+      --spot-color: #090909;
+      --spot-opacity: 0.42;
+      --amber: #f7b519;
+      --amber-text: #1b1404;
+      --white: #ffffff;
+      --card-red: #b81220;
+      --card-red-2: #990d19;
+      --ink-dark: #181818;
+      --ink-muted: #52525b;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body.spot-green {
+      --spot-color: #10b94b;
+      --spot-opacity: 0.48;
     }
 
     * {
@@ -26,629 +33,1321 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 118, 128, 0.34), transparent 52%),
+        linear-gradient(180deg, #e52737 0%, #c91828 54%, #a6101d 100%);
+      color: var(--white);
       min-height: 100vh;
-      background: var(--bg-void);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      padding: 14px 14px 124px;
       overflow-x: hidden;
-      perspective: 1200px;
     }
 
-    /* 5D Ko'p qatlamli Dalmatin fon va chuqurlik */
-    .stage-5d {
+    /* Bold organic Dalmatian spots layer behind cards */
+    .dalmatian-bg {
       position: fixed;
-      inset: -40px;
+      inset: 0;
       pointer-events: none;
       z-index: 0;
-      transform-style: preserve-3d;
+      overflow: hidden;
     }
 
-    .layer-spots {
+    .d-spot {
       position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(circle at 14% 18%, rgba(24, 224, 104, 0.22) 0 38px, transparent 40px),
-        radial-gradient(circle at 82% 14%, rgba(24, 224, 104, 0.16) 0 54px, transparent 56px),
-        radial-gradient(circle at 68% 48%, rgba(24, 224, 104, 0.20) 0 28px, transparent 30px),
-        radial-gradient(circle at 24% 66%, rgba(24, 224, 104, 0.18) 0 46px, transparent 48px),
-        radial-gradient(circle at 86% 82%, rgba(24, 224, 104, 0.24) 0 34px, transparent 36px),
-        radial-gradient(circle at 46% 88%, rgba(24, 224, 104, 0.14) 0 22px, transparent 24px);
-      transform: translate3d(calc(var(--px) * 14px), calc(var(--py) * 14px), -60px) scale(1.06);
-      transition: transform 0.18s ease-out;
-      filter: blur(0.4px);
+      background: var(--spot-color);
+      opacity: var(--spot-opacity);
+      transition: background-color 0.35s var(--ease), opacity 0.35s var(--ease), transform 0.55s var(--spring);
+      animation: spotDrift 8s ease-in-out infinite alternate;
     }
 
-    .layer-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(24, 224, 104, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(24, 224, 104, 0.05) 1px, transparent 1px);
-      background-size: 44px 44px;
-      transform: translate3d(calc(var(--px) * 26px), calc(var(--py) * 26px), -20px) rotateX(8deg);
-      transition: transform 0.18s ease-out;
-      mask-image: radial-gradient(circle at 50% 35%, black 25%, transparent 80%);
+    .dalmatian-bg.pulse-spots .d-spot {
+      animation: spotPulseKick 0.55s var(--spring), spotDrift 8s ease-in-out infinite alternate;
     }
 
-    .ambient-orb {
-      position: absolute;
-      width: 340px;
-      height: 340px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(24, 224, 104, 0.20), transparent 70%);
-      top: 8%;
-      left: 50%;
-      transform: translate3d(calc(-50% + var(--px) * 36px), calc(var(--py) * 36px), 30px);
-      transition: transform 0.2s ease-out;
-    }
+    .d-spot.s1 { width: 112px; height: 86px; top: 3%; left: -24px; border-radius: 62% 38% 55% 45% / 48% 64% 36% 52%; transform: rotate(-18deg); }
+    .d-spot.s2 { width: 54px; height: 44px; top: 11%; left: 28%; border-radius: 44% 56% 39% 61% / 57% 41% 59% 43%; animation-delay: -1.4s; }
+    .d-spot.s3 { width: 124px; height: 92px; top: 5%; right: -30px; border-radius: 41% 59% 35% 65% / 60% 38% 62% 40%; transform: rotate(22deg); animation-delay: -2.8s; }
+    .d-spot.s4 { width: 44px; height: 36px; top: 24%; right: 6%; border-radius: 62% 38% 48% 52% / 42% 58% 42% 58%; animation-delay: -3.5s; }
+    .d-spot.s5 { width: 96px; height: 74px; top: 37%; left: -26px; border-radius: 52% 48% 63% 37% / 47% 53% 47% 53%; animation-delay: -4.2s; }
+    .d-spot.s6 { width: 72px; height: 56px; top: 50%; right: -18px; border-radius: 38% 62% 55% 45% / 54% 46% 54% 46%; animation-delay: -2.1s; }
+    .d-spot.s7 { width: 108px; height: 82px; bottom: 22%; left: -26px; border-radius: 64% 36% 42% 58% / 48% 61% 39% 52%; animation-delay: -5.1s; }
+    .d-spot.s8 { width: 48px; height: 38px; bottom: 17%; left: 34%; border-radius: 47% 53% 60% 40% / 56% 44% 56% 44%; animation-delay: -1.8s; }
+    .d-spot.s9 { width: 98px; height: 76px; bottom: 15%; right: -22px; border-radius: 49% 51% 37% 63% / 62% 39% 61% 38%; animation-delay: -3.9s; }
 
-    .app {
+    body > *:not(.dalmatian-bg):not(.toast):not(.dock-wrap) {
       position: relative;
       z-index: 1;
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 18px 16px 96px;
     }
 
-    /* 5D Kartalar */
-    .card-5d {
-      background: var(--bg-panel);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.65),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transform: rotateY(calc(var(--px) * 4deg)) rotateX(calc(var(--py) * -4deg));
-      transform-style: preserve-3d;
-      transition: transform 0.2s ease-out, border-color 0.25s ease, background 0.25s ease;
+    @keyframes spotDrift {
+      0% { translate: 0px 0px; }
+      100% { translate: 5px -7px; }
     }
 
-    .card-5d:hover {
-      border-color: rgba(24, 224, 104, 0.48);
-      background: var(--bg-panel-hover);
+    @keyframes spotPulseKick {
+      0% { scale: 1; }
+      45% { scale: 1.14; }
+      100% { scale: 1; }
     }
 
-    .header {
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Springy tactile animations */
+    button, .step-card, .ex-row, .track-row, .choice-card, .mood-chip, .preset-chip {
+      transition:
+        transform 0.24s var(--spring),
+        background-color 0.2s var(--ease),
+        box-shadow 0.2s var(--ease),
+        border-color 0.2s var(--ease);
+    }
+
+    button:hover, .step-card:hover, .ex-row:hover, .track-row:hover, .choice-card:hover, .mood-chip:hover, .preset-chip:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active, .step-card:active, .ex-row:active, .track-row:active, .choice-card:active, .mood-chip:active, .preset-chip:active {
+      transform: scale(0.94);
+    }
+
+    button.btn-kick { animation: spotKick 0.38s var(--spring); }
+    @keyframes spotKick {
+      0% { transform: scale(0.92); }
+      45% { transform: scale(1.06) translateY(-2px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    /* Top Bar */
+    .topbar {
+      max-width: 540px;
+      margin: 0 auto 14px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+      animation: fadeDown 0.4s var(--ease) both;
     }
 
-    .brand-badge {
-      width: 46px;
-      height: 46px;
+    .brand { display: flex; align-items: center; gap: 10px; }
+
+    .brand-icon {
+      position: relative;
+      width: 44px;
+      height: 44px;
       border-radius: 15px;
-      background: linear-gradient(145deg, rgba(24, 224, 104, 0.28), rgba(6, 36, 18, 0.9));
-      border: 1px solid rgba(24, 224, 104, 0.55);
-      box-shadow: var(--neon-glow);
+      background: var(--white);
+      color: var(--spot-red);
+      font-weight: 900;
+      font-size: 21px;
       display: grid;
       place-items: center;
-      font-weight: 900;
-      font-size: 18px;
-      color: var(--neon);
-      transform: translateZ(18px);
+      box-shadow: 0 6px 16px rgba(60, 4, 9, 0.35);
+      overflow: hidden;
     }
 
-    .brand h1 {
-      font-size: 20px;
-      letter-spacing: 0.8px;
-      font-weight: 800;
+    .brand-icon::after {
+      content: "";
+      position: absolute;
+      width: 13px;
+      height: 11px;
+      top: 4px;
+      right: 4px;
+      border-radius: 60% 40% 50% 50% / 45% 60% 40% 55%;
+      background: var(--spot-color);
+      opacity: 0.92;
+      transition: background-color 0.3s var(--ease);
     }
 
-    .brand p {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .brand strong { display: block; font-size: 18px; font-weight: 900; letter-spacing: -0.3px; color: var(--white); }
+    .brand span { font-size: 11.5px; font-weight: 600; color: rgba(255, 255, 255, 0.94); }
 
-    .pill-5d {
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      color: var(--neon);
-      background: var(--neon-soft);
-      border: 1px solid rgba(24, 224, 104, 0.35);
-      transform: translateZ(14px);
-    }
+    .top-controls { display: flex; align-items: center; gap: 7px; }
 
-    .section-title {
-      display: flex;
+    .spot-toggle-btn {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      transform: translateZ(12px);
-    }
-
-    .section-title h2 {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
-    .section-title span {
-      font-size: 12px;
-      color: var(--neon);
-      font-weight: 600;
-    }
-
-    /* Taymer */
-    .timer-display {
-      text-align: center;
-      font-size: 44px;
+      gap: 6px;
+      background: var(--white);
+      color: var(--ink-dark);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 11.5px;
       font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 2px;
-      color: var(--text-main);
-      text-shadow: 0 0 24px rgba(24, 224, 104, 0.28);
-      margin: 8px 0 14px;
-      transform: translateZ(24px);
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.24);
     }
 
-    .presets {
+    .spot-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%;
+      background: var(--spot-color);
+      display: inline-block;
+      transition: background-color 0.3s var(--ease);
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 3px;
+      background: rgba(28, 25, 25, 0.48);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      padding: 3px;
+    }
+
+    .lang-switch button {
+      border: none;
+      background: transparent;
+      color: var(--white);
+      font-weight: 800;
+      font-size: 11px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .lang-switch button.active {
+      background: var(--white);
+      color: var(--spot-red);
+    }
+
+    .app-shell {
+      max-width: 540px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Hero Card */
+    .hero-card {
+      background: linear-gradient(145deg, rgba(24, 24, 27, 0.88), rgba(15, 15, 18, 0.94));
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 26px;
+      padding: 18px;
+      box-shadow: 0 14px 32px rgba(45, 2, 6, 0.38);
+      color: var(--white);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .hero-top h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.3px; }
+    .hero-top p { font-size: 12.5px; color: rgba(255, 255, 255, 0.78); margin-top: 3px; }
+
+    .streak-pill {
+      background: var(--amber);
+      color: var(--amber-text);
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(247, 181, 25, 0.35);
+      cursor: pointer;
+    }
+
+    .hero-stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .stat-box strong { display: block; font-size: 16px; font-weight: 900; color: var(--amber); }
+    .stat-box span { font-size: 10.5px; font-weight: 700; color: rgba(255, 255, 255, 0.8); }
+
+    /* White Cards */
+    .card {
+      background: var(--white);
+      color: var(--ink-dark);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: 0 12px 28px rgba(58, 3, 8, 0.28);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 8px;
       margin-bottom: 12px;
     }
 
-    .btn {
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-      padding: 10px 12px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-
-    .btn:active {
-      transform: scale(0.96);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #18e068, #0ca84b);
-      color: #031209;
-      border: none;
+    .card-head h2 { font-size: 16px; font-weight: 900; color: var(--ink-dark); }
+    .badge-red {
+      background: #fee2e2;
+      color: var(--spot-red-deep);
+      font-size: 11px;
       font-weight: 800;
-      box-shadow: var(--neon-glow);
+      padding: 4px 9px;
+      border-radius: 999px;
     }
 
-    .controls-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 10px;
+    /* Choice Grids */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+
+    .choice-card {
+      background: #f4f4f5;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink-dark);
     }
 
-    /* Musiqa / MP3 */
-    .music-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
+    .choice-card span { display: block; font-size: 18px; margin-bottom: 3px; }
+    .choice-card.active {
+      background: #fff1f2;
+      border-color: var(--spot-red);
+      color: var(--spot-red-deep);
+      box-shadow: 0 4px 12px rgba(227, 38, 54, 0.18);
     }
 
-    .input {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: var(--text-main);
+    .input-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+    .field label { display: block; font-size: 11px; font-weight: 800; color: var(--ink-muted); margin-bottom: 4px; }
+
+    input, select {
+      width: 100%;
+      background: #f4f4f5;
+      color: var(--ink-dark);
+      border: 1.5px solid #d4d4d8;
+      border-radius: 13px;
+      padding: 9px 11px;
       font-size: 13px;
+      font-weight: 700;
       outline: none;
     }
 
-    .input:focus {
-      border-color: var(--neon);
-    }
+    input:focus, select:focus { border-color: var(--spot-red); background: #fff; }
 
-    .track-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .track-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
+    .btn-amber {
+      background: var(--amber);
+      color: var(--amber-text);
+      border: none;
       border-radius: 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      font-size: 13px;
-    }
-
-    .track-item.active {
-      border-color: rgba(24, 224, 104, 0.5);
-      background: var(--neon-soft);
-    }
-
-    .track-meta {
-      overflow: hidden;
-      text-overflow: ellipsis;
+      padding: 10px 15px;
+      font-weight: 900;
+      font-size: 12.5px;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(247, 181, 25, 0.38);
       white-space: nowrap;
     }
 
-    .track-meta small {
-      color: var(--text-muted);
-      display: block;
-      font-size: 11px;
+    .btn-red {
+      background: var(--spot-red);
+      color: var(--white);
+      border: none;
+      border-radius: 14px;
+      padding: 10px 15px;
+      font-weight: 900;
+      font-size: 12.5px;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(227, 38, 54, 0.34);
     }
 
-    /* Kaloriya */
-    .kcal-summary {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 16px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-    }
-
-    .kcal-total {
-      font-size: 26px;
+    .btn-soft {
+      background: #f4f4f5;
+      color: var(--ink-dark);
+      border: 1.5px solid #e4e4e7;
+      border-radius: 13px;
+      padding: 8px 12px;
       font-weight: 800;
-      color: var(--neon);
+      font-size: 12px;
+      cursor: pointer;
     }
 
-    .meal-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 10px;
+    /* Ring Timer */
+    .ring-wrap {
+      position: relative;
+      width: 176px;
+      height: 176px;
+      margin: 6px auto 12px;
+      display: grid;
+      place-items: center;
     }
 
-    .meal-item {
+    .ring-wrap svg {
+      position: absolute;
+      inset: 0;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg { fill: none; stroke: #f4f4f5; stroke-width: 12; }
+    .ring-fg {
+      fill: none;
+      stroke: var(--spot-red);
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.35s var(--ease);
+    }
+
+    .ring-center { text-align: center; z-index: 1; }
+    .ring-center strong { display: block; font-size: 30px; font-weight: 900; color: var(--ink-dark); letter-spacing: -0.5px; }
+    .ring-center span { font-size: 11px; font-weight: 800; color: var(--ink-muted); }
+
+    .timer-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 7px; }
+
+    /* Workout Exercises */
+    .ex-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      font-size: 13px;
+      gap: 10px;
+      background: #fafafa;
+      border: 1.5px solid #e4e4e7;
+      border-radius: 15px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      cursor: pointer;
     }
 
-    .del-btn {
+    .ex-row.done { background: #ecfdf5; border-color: #10b981; }
+    .ex-row strong { display: block; font-size: 13px; font-weight: 800; }
+    .ex-row span { font-size: 11.5px; color: var(--ink-muted); font-weight: 600; }
+    .ex-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 2px solid #d4d4d8;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 13px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .ex-row.done .ex-check { background: #10b981; border-color: #10b981; }
+
+    /* Music Player */
+    .track-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: #fafafa;
+      border: 1.5px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 9px 12px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .track-row.playing { background: #fff1f2; border-color: var(--spot-red); }
+    .track-row strong { display: block; font-size: 12.5px; font-weight: 800; }
+    .track-row span { font-size: 11px; color: var(--ink-muted); font-weight: 600; }
+
+    /* Presets & Food Log */
+    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .preset-chip {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .food-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 8px 11px;
+      margin-top: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .ai-note {
+      background: #fff1f2;
+      border-left: 4px solid var(--spot-red);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--spot-red-deep);
+      line-height: 1.45;
+    }
+
+    /* Bottom Dock */
+    .dock-wrap {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 520px;
+      background: rgba(18, 18, 22, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 22px;
+      padding: 7px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+      z-index: 50;
+    }
+
+    .dock-btn {
       background: transparent;
       border: none;
-      color: #ff6b6b;
-      font-weight: 700;
+      color: rgba(255, 255, 255, 0.78);
+      border-radius: 15px;
+      padding: 7px 4px;
+      font-size: 10.5px;
+      font-weight: 800;
       cursor: pointer;
-      padding: 2px 6px;
-    }
-
-    .bottom-bar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 5;
-      background: rgba(5, 8, 6, 0.88);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
       display: flex;
-      justify-content: center;
-    }
-
-    .bottom-inner {
-      width: 100%;
-      max-width: 520px;
-      display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
+      gap: 2px;
     }
+
+    .dock-btn.active { background: var(--spot-red); color: var(--white); }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-24px);
+      background: var(--ink-dark);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s var(--ease);
+      z-index: 999;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
-  <div class="stage-5d" aria-hidden="true">
-    <div class="layer-spots"></div>
-    <div class="layer-grid"></div>
-    <div class="ambient-orb"></div>
+  <div class="dalmatian-bg" aria-hidden="true">
+    <span class="d-spot s1"></span><span class="d-spot s2"></span><span class="d-spot s3"></span>
+    <span class="d-spot s4"></span><span class="d-spot s5"></span><span class="d-spot s6"></span>
+    <span class="d-spot s7"></span><span class="d-spot s8"></span><span class="d-spot s9"></span>
   </div>
 
-  <main class="app">
-    <header class="card-5d header">
-      <div class="brand">
-        <div class="brand-badge">F5</div>
+  <div class="toast" id="toast">Saqlandi!</div>
+  <audio id="real-audio" preload="none"></audio>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">F</div>
+      <div>
+        <strong>FITMANI</strong>
+        <span id="t-tagline">Shaxsiy sog‘lom odat va AI ratsion</span>
+      </div>
+    </div>
+    <div class="top-controls">
+      <button class="spot-toggle-btn" id="btn-spot-toggle" onclick="toggleSpotColor()" title="Dog‘ rangini o‘zgartirish">
+        <span class="spot-dot" id="spot-dot-ic"></span>
+        <span id="spot-toggle-label">Qora dog‘</span>
+      </button>
+      <div class="lang-switch">
+        <button class="active" onclick="setLang('uz', this)">UZ</button>
+        <button onclick="setLang('ru', this)">RU</button>
+        <button onclick="setLang('en', this)">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <!-- Hero Overview Card -->
+    <section class="hero-card" id="sec-home">
+      <div class="hero-top">
         <div>
-          <h1>FITMANI</h1>
-          <p>Pitch-Black • Dalmatin • 5D Studio</p>
+          <h1 id="t-hello">Salom, Do‘stim!</h1>
+          <p id="t-sub">Bugungi shaxsiy reja, taymer va AI ovqatlanish nazorati</p>
+        </div>
+        <div class="streak-pill" id="t-streak" onclick="bumpStreak()">🔥 1 kun streak</div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <strong id="st-target-kcal">2150</strong>
+          <span id="lbl-norma">Kunlik norma</span>
+        </div>
+        <div class="stat-box">
+          <strong id="st-eaten-kcal">0</strong>
+          <span id="lbl-eaten">Iste’mol kkal</span>
+        </div>
+        <div class="stat-box">
+          <strong id="st-session-min">30 daq</strong>
+          <span id="lbl-dur">Mashq vaqti</span>
         </div>
       </div>
-      <div class="pill-5d">5D ACTIVE</div>
-    </header>
-
-    <!-- 1. Mashg'ulot Taymeri -->
-    <section class="card-5d">
-      <div class="section-title">
-        <h2>Mashg'ulot Taymeri</h2>
-        <span id="timerStatus">Tayyor</span>
-      </div>
-      <div class="timer-display" id="timerDisplay">00:45</div>
-      <div class="presets">
-        <button class="btn" onclick="setPreset(30)">30s</button>
-        <button class="btn" onclick="setPreset(45)">45s</button>
-        <button class="btn" onclick="setPreset(60)">60s</button>
-        <button class="btn" onclick="setPreset(90)">90s</button>
-      </div>
-      <div class="controls-row">
-        <button class="btn btn-primary" id="toggleTimerBtn" onclick="toggleTimer()">Boshlash</button>
-        <button class="btn" onclick="resetTimer()">Qayta</button>
+      <div class="hero-stats" style="margin-top: 8px;">
+        <div class="stat-box">
+          <strong id="st-macro-p">128g</strong>
+          <span id="lbl-macro-p">Oqsil (Protein)</span>
+        </div>
+        <div class="stat-box">
+          <strong id="st-macro-f">56g</strong>
+          <span id="lbl-macro-f">Yog‘ (Fats)</span>
+        </div>
+        <div class="stat-box">
+          <strong id="st-macro-c">208g</strong>
+          <span id="lbl-macro-c">Uglevod (Carbs)</span>
+        </div>
       </div>
     </section>
 
-    <!-- 2. Musiqa Qidirish va MP3 Pleer -->
-    <section class="card-5d">
-      <div class="section-title">
-        <h2>Workout Musiqa & MP3</h2>
-        <span id="nowPlayingLabel">Trek tanlanmagan</span>
+    <!-- AI Personalization & Schedule -->
+    <section class="card" id="sec-plan">
+      <div class="card-head">
+        <h2 id="t-goal-title">AI Shaxsiylashtirish</h2>
+        <span class="badge-red" id="t-sched-badge">Mifflin-St Jeor AI</span>
       </div>
-      <div class="music-row">
-        <input class="input" id="musicSearchInput" type="text" placeholder="Trek yoki uslub qidiring (masalan: Phonk, Gym)..." oninput="filterTracks()" />
-        <label class="btn" style="display:grid;place-items:center;">
-          + MP3
-          <input type="file" accept="audio/*" multiple hidden onchange="handleMp3Upload(event)" />
-        </label>
+
+      <div class="grid-3" id="gender-grid">
+        <div class="choice-card active" data-gender="male" onclick="selectGender('male', this)"><span>👨</span><b id="lbl-male">Erkak</b></div>
+        <div class="choice-card" data-gender="female" onclick="selectGender('female', this)"><span>👩</span><b id="lbl-female">Ayol</b></div>
+        <div class="choice-card active" data-level="beginner" id="btn-level-toggle" onclick="cycleLevel()"><span>🌱</span><b id="lbl-level">Boshlang‘ich</b></div>
       </div>
-      <audio id="audioPlayer" controls style="width:100%; margin-top:6px; border-radius:12px;"></audio>
-      <div class="track-list" id="trackList"></div>
+
+      <div class="grid-3" id="goal-grid">
+        <div class="choice-card active" data-goal="cut" onclick="selectGoal('cut', this)"><span>🔥</span><b id="lbl-cut">Ozish</b></div>
+        <div class="choice-card" data-goal="bulk" onclick="selectGoal('bulk', this)"><span>💪</span><b id="lbl-bulk">Vazn olish</b></div>
+        <div class="choice-card" data-goal="fit" onclick="selectGoal('fit', this)"><span>⚡</span><b id="lbl-fit">Tonus</b></div>
+      </div>
+
+      <div class="grid-3" id="place-grid">
+        <div class="choice-card active" data-place="home" onclick="selectPlace('home', this)"><span>🏠</span><b id="lbl-home">Uyda</b></div>
+        <div class="choice-card" data-place="gym" onclick="selectPlace('gym', this)"><span>🏋️</span><b id="lbl-gym">Zal</b></div>
+        <div class="choice-card" data-place="workout" onclick="selectPlace('workout', this)"><span>🤸</span><b id="lbl-workout">Vorkaut</b></div>
+      </div>
+
+      <div class="input-row" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 8px;">
+        <div class="field">
+          <label id="lbl-age">Yosh</label>
+          <input id="i-age" type="number" value="27" />
+        </div>
+        <div class="field">
+          <label id="lbl-weight">Vazn (kg)</label>
+          <input id="i-weight" type="number" value="75" />
+        </div>
+        <div class="field">
+          <label id="lbl-height">Bo‘y (sm)</label>
+          <input id="i-height" type="number" value="175" />
+        </div>
+      </div>
+
+      <div class="input-row" style="grid-template-columns: 1fr auto;">
+        <input id="i-note" type="text" placeholder="Masalan: tizzam og‘riydi, belim og‘riydi, vaqtim 20 daqiqa..." />
+        <button class="btn-amber" id="btn-save-prof" onclick="generateAiPlan()">✨ AI Reja</button>
+      </div>
+
+      <div class="ai-note" id="ai-advice-box">
+        AI Murabbiy: Parametrlaringizni kiriting va "AI Reja" tugmasini bosing — sizga mos ratsion va mashq tuziladi.
+      </div>
     </section>
 
-    <!-- 3. Kaloriya va Taom Hisoblagichi -->
-    <section class="card-5d">
-      <div class="section-title">
-        <h2>Kaloriya Hisoblagich</h2>
-        <span>Kunlik nazorat</span>
+    <!-- Circular Ring Workout Timer -->
+    <section class="card" id="sec-timer">
+      <div class="card-head">
+        <h2 id="t-timer-title">Mashg‘ulot Taymeri</h2>
+        <span class="badge-red" id="t-timer-mode">30 daqiqa reja</span>
       </div>
-      <div class="kcal-summary">
-        <div>
-          <div style="font-size:12px;color:var(--text-muted);">Jami iste'mol</div>
-          <div class="kcal-total" id="totalKcal">0 kkal</div>
+
+      <div class="ring-wrap">
+        <svg width="176" height="176" viewBox="0 0 176 176">
+          <circle class="ring-bg" cx="88" cy="88" r="76"></circle>
+          <circle class="ring-fg" id="ring-progress" cx="88" cy="88" r="76"></circle>
+        </svg>
+        <div class="ring-center">
+          <strong id="clock-text">30:00</strong>
+          <span id="clock-sub">TAYYOR</span>
         </div>
-        <button class="btn" onclick="clearMeals()">Tozalash</button>
       </div>
-      <div class="music-row">
-        <input class="input" id="mealNameInput" type="text" placeholder="Taom (masalan: Tovuq ko'kragi)" />
-        <input class="input" id="mealKcalInput" type="number" placeholder="kkal" style="max-width:96px;" />
-        <button class="btn btn-primary" onclick="addMeal()">+</button>
+
+      <div class="timer-actions">
+        <button class="btn-red" id="btn-timer-toggle" onclick="toggleTimer()">Boshlash</button>
+        <button class="btn-soft" id="btn-timer-reset" onclick="resetClock()">Qayta</button>
+        <button class="btn-soft" onclick="setTimerSec(45)">45s dam</button>
+        <button class="btn-soft" onclick="setTimerSec(90)">90s</button>
+        <button class="btn-soft" id="btn-plan-min" onclick="setTimerSec(calcTargets().mins * 60)">30m</button>
       </div>
-      <div class="meal-list" id="mealList"></div>
+
+      <div id="workout-list" style="margin-top: 12px;"></div>
+    </section>
+
+    <!-- Workout Music & MP3 -->
+    <section class="card" id="sec-music">
+      <div class="card-head">
+        <h2 id="t-music-title">Workout Musiqa & MP3</h2>
+        <button class="btn-soft" id="btn-upload-mp3" onclick="document.getElementById('mp3-input').click()">+ MP3 yuklash</button>
+        <input id="mp3-input" type="file" accept="audio/*" hidden onchange="loadLocalMp3(this)" />
+      </div>
+
+      <div class="input-row" style="grid-template-columns: 1fr auto; margin-bottom: 6px;">
+        <input id="music-query" type="text" value="workout phonk energy" placeholder="Musiqa uslubini qidiring..." />
+        <button class="btn-amber" id="btn-search-music" onclick="searchMusic()">Qidirish</button>
+      </div>
+
+      <div id="track-list"></div>
+    </section>
+
+    <!-- Calorie & Nutrition Counter -->
+    <section class="card" id="sec-food">
+      <div class="card-head">
+        <h2 id="t-food-title">AI Kaloriya Hisoblagich</h2>
+        <span class="badge-red" id="food-remain-badge">Qoldi: 1850 kkal</span>
+      </div>
+
+      <div class="preset-row">
+        <button class="preset-chip" onclick="quickAddFood('Tovuq filesi + guruch', 460)">+ Tovuq & guruch (460)</button>
+        <button class="preset-chip" onclick="quickAddFood('3 ta tuxum + suli', 340)">+ Tuxum & suli (340)</button>
+        <button class="preset-chip" onclick="quickAddFood('Banan + tvorog', 250)">+ Banan & tvorog (250)</button>
+      </div>
+
+      <div class="input-row" style="grid-template-columns: 1fr 92px auto;">
+        <input id="food-name" type="text" placeholder="Taom nomi" />
+        <input id="food-kcal" type="number" placeholder="Kkal" />
+        <button class="btn-red" id="btn-add-food" onclick="addFood()">Qo‘shish</button>
+      </div>
+
+      <div id="food-log-list"></div>
     </section>
   </main>
 
-  <div class="bottom-bar">
-    <div class="bottom-inner">
-      <span id="tgUserInfo">Fitmani Mini App</span>
-      <button class="btn" style="padding:7px 12px;font-size:12px;" onclick="sendSummaryToBot()">Natijani Botga Yuborish</button>
-    </div>
-  </div>
+  <nav class="dock-wrap">
+    <button class="dock-btn active" onclick="scrollToSec('sec-home', this)"><span>🏠</span><b id="nav-home">Asosiy</b></button>
+    <button class="dock-btn" onclick="scrollToSec('sec-timer', this)"><span>⏱️</span><b id="nav-timer">Taymer</b></button>
+    <button class="dock-btn" onclick="scrollToSec('sec-music', this)"><span>🎧</span><b id="nav-music">Musiqa</b></button>
+    <button class="dock-btn" onclick="scrollToSec('sec-food', this)"><span>🥗</span><b id="nav-food">Kaloriya</b></button>
+  </nav>
 
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
       tg.ready();
       tg.expand();
-      const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
-      if (u && u.first_name) {
-        document.getElementById("tgUserInfo").textContent = "Salom, " + u.first_name + "!";
+    }
+
+    const uname = tg && tg.initDataUnsafe && tg.initDataUnsafe.user
+      ? tg.initDataUnsafe.user.first_name
+      : "Do‘stim";
+
+    let st = JSON.parse(localStorage.getItem("fitmani_cola_v2") || "null") || {
+      lang: "uz",
+      gender: "male",
+      level: "beginner",
+      goal: "cut",
+      place: "home",
+      age: 27,
+      weight: 75,
+      height: 175,
+      userNote: "",
+      streak: 1,
+      spotMode: "black",
+      doneEx: [],
+      foodLog: []
+    };
+
+    const RING_CIRC = 2 * Math.PI * 76;
+    const ringEl = document.getElementById("ring-progress");
+    ringEl.style.strokeDasharray = RING_CIRC;
+    ringEl.style.strokeDashoffset = 0;
+
+    let totalSec = 30 * 60;
+    let left = totalSec;
+    let tid = null;
+    let on = false;
+    let currentTrackIdx = -1;
+
+    const L = {
+      uz: {
+        tagline: "Shaxsiy sog‘lom odat va AI ratsion",
+        spotBlack: "Qora dog‘",
+        spotGreen: "Yashil dog‘",
+        spotBlackMsg: "Qop-qora Dalmatin dog‘lar yoqildi!",
+        spotGreenMsg: "Yam-yashil Dalmatin dog‘lar yoqildi!",
+        hello: (n) => `Salom, ${n || "Do‘stim"}!`,
+        sub: "Bugungi shaxsiy reja, taymer va AI ovqatlanish nazorati",
+        norma: "Kunlik norma",
+        eaten: "Iste’mol kkal",
+        dur: "Mashq vaqti",
+        macroP: "Oqsil (Protein)",
+        macroF: "Yog‘ (Fats)",
+        macroC: "Uglevod (Carbs)",
+        goalTitle: "AI Shaxsiylashtirish",
+        male: "Erkak",
+        female: "Ayol",
+        cut: "Ozish",
+        bulk: "Vazn olish",
+        fit: "Tonus",
+        home: "Uyda",
+        gym: "Zal",
+        workout: "Vorkaut",
+        age: "Yosh",
+        weight: "Vazn (kg)",
+        height: "Bo‘y (sm)",
+        aiBtn: "✨ AI Reja",
+        timerTitle: "Mashg‘ulot Taymeri",
+        musicTitle: "Workout Musiqa & MP3",
+        uploadMp3: "+ MP3 yuklash",
+        searchBtn: "Qidirish",
+        foodTitle: "AI Kaloriya Hisoblagich",
+        addBtn: "Qo‘shish",
+        start: "Boshlash",
+        pause: "Pauza",
+        reset: "Qayta",
+        ready: "TAYYOR",
+        running: "JARAYONDA",
+        navHome: "Asosiy",
+        navTimer: "Taymer",
+        navMusic: "Musiqa",
+        navFood: "Kaloriya"
+      },
+      ru: {
+        tagline: "Помощник привычек и AI-рацион",
+        spotBlack: "Чёрные пятна",
+        spotGreen: "Зелёные пятна",
+        spotBlackMsg: "Включены чёрные далматин-пятна!",
+        spotGreenMsg: "Включены зелёные далматин-пятна!",
+        hello: (n) => `Привет, ${n || "Друг"}!`,
+        sub: "Персональный план, таймер и контроль AI-рациона",
+        norma: "Дневная норма",
+        eaten: "Съедено ккал",
+        dur: "Время трен.",
+        macroP: "Белки (Protein)",
+        macroF: "Жиры (Fats)",
+        macroC: "Углеводы (Carbs)",
+        goalTitle: "AI Персонализация",
+        male: "Мужчина",
+        female: "Женщина",
+        cut: "Похудение",
+        bulk: "Набор массы",
+        fit: "Тонус",
+        home: "Дома",
+        gym: "Зал",
+        workout: "Воркаут",
+        age: "Возраст",
+        weight: "Вес (кг)",
+        height: "Рост (см)",
+        aiBtn: "✨ AI План",
+        timerTitle: "Таймер тренировки",
+        musicTitle: "Музыка и MP3 для тренировки",
+        uploadMp3: "+ Загрузить MP3",
+        searchBtn: "Поиск",
+        foodTitle: "AI Счётчик калорий",
+        addBtn: "Добавить",
+        start: "Старт",
+        pause: "Пауза",
+        reset: "Сброс",
+        ready: "ГОТОВ",
+        running: "ИДЁТ",
+        navHome: "Главная",
+        navTimer: "Таймер",
+        navMusic: "Музыка",
+        navFood: "Калории"
+      },
+      en: {
+        tagline: "Personal habit & AI nutrition guide",
+        spotBlack: "Black Spots",
+        spotGreen: "Green Spots",
+        spotBlackMsg: "Pitch-black Dalmatian spots enabled!",
+        spotGreenMsg: "Vibrant green Dalmatian spots enabled!",
+        hello: (n) => `Hi, ${n || "Friend"}!`,
+        sub: "Daily custom workout plan, timer & AI calorie tracker",
+        norma: "Daily Target",
+        eaten: "Eaten kcal",
+        dur: "Duration",
+        macroP: "Protein",
+        macroF: "Fats",
+        macroC: "Carbs",
+        goalTitle: "AI Personalization",
+        male: "Male",
+        female: "Female",
+        cut: "Fat Loss",
+        bulk: "Muscle Gain",
+        fit: "Tone & Fit",
+        home: "Home",
+        gym: "Gym",
+        workout: "Workout",
+        age: "Age",
+        weight: "Weight (kg)",
+        height: "Height (cm)",
+        aiBtn: "✨ AI Plan",
+        timerTitle: "Workout Timer",
+        musicTitle: "Workout Music & MP3",
+        uploadMp3: "+ Upload MP3",
+        searchBtn: "Search",
+        foodTitle: "AI Calorie Tracker",
+        addBtn: "Add",
+        start: "Start",
+        pause: "Pause",
+        reset: "Reset",
+        ready: "READY",
+        running: "RUNNING",
+        navHome: "Home",
+        navTimer: "Timer",
+        navMusic: "Music",
+        navFood: "Calories"
       }
+    };
+
+    const WORKOUTS = {
+      home: [
+        { name: "Razminka & Sakrash (Jumping Jacks)", meta: "3 daqiqa • Yurak urishini tezlashtirish" },
+        { name: "Otjimaniya (Push-ups)", meta: "4 x 15 marta • Ko‘krak va yelka" },
+        { name: "Prisedaniya (Squats)", meta: "4 x 20 marta • Oyoq va bel kuchi" },
+        { name: "Planka (Core Hold)", meta: "3 x 45 soniya • Qorin mushaklari" }
+      ],
+      gym: [
+        { name: "Yugurish yo‘lakchasi (Incline Walk)", meta: "6 daqiqa • Qizish bosqichi" },
+        { name: "Jimm lyojya (Bench Press)", meta: "4 x 12 marta • Yuqori tana" },
+        { name: "Tyaga verxnego bloka", meta: "4 x 12 marta • Orqa kengligi" },
+        { name: "Oyoq jimi (Leg Press)", meta: "3 x 15 marta • Oyoq kuchi" }
+      ],
+      workout: [
+        { name: "Turnikda tortilish (Pull-ups)", meta: "4 x 8 marta • Orqa va qo‘l" },
+        { name: "Brusyada otjimaniya (Dips)", meta: "4 x 12 marta • Triceps va ko‘krak" },
+        { name: "Turnikda oyoq ko‘tarish", meta: "3 x 12 marta • Press" },
+        { name: "Yengil yugurish + cho‘zilish", meta: "5 daqiqa • Tiklanish" }
+      ]
+    };
+
+    const TRACKS = [
+      { title: "Dalmatin Phonk Power", artist: "FITMANI Studio • 132 BPM", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { title: "Red Sprint Energy", artist: "Cardio Mix • 140 BPM", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+      { title: "Iron Focus Bass", artist: "Gym Mode • 128 BPM", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+    ];
+
+    function saveState() {
+      localStorage.setItem("fitmani_cola_v2", JSON.stringify(st));
     }
 
-    // 5D Parallaks (sichqoncha va giroskop)
-    function update5D(nx, ny) {
-      document.documentElement.style.setProperty("--px", nx.toFixed(3));
-      document.documentElement.style.setProperty("--py", ny.toFixed(3));
-    }
-    window.addEventListener("pointermove", (e) => {
-      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-      update5D(nx, ny);
-    });
-    window.addEventListener("deviceorientation", (e) => {
-      if (e.gamma !== null && e.beta !== null) {
-        const nx = Math.max(-1, Math.min(1, e.gamma / 30));
-        const ny = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
-        update5D(nx, ny);
-      }
-    });
-
-    // Taymer logikasi
-    let remaining = 45;
-    let timerInterval = null;
-
-    function renderTimer() {
-      const m = String(Math.floor(remaining / 60)).padStart(2, "0");
-      const s = String(remaining % 60).padStart(2, "0");
-      document.getElementById("timerDisplay").textContent = `${m}:${s}`;
+    function applySpotMode() {
+      const isGreen = st.spotMode === "green";
+      document.body.classList.toggle("spot-green", isGreen);
+      const d = L[st.lang] || L.uz;
+      const lbl = document.getElementById("spot-toggle-label");
+      if (lbl) lbl.textContent = isGreen ? d.spotGreen : d.spotBlack;
     }
 
-    function setPreset(sec) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      remaining = sec;
-      document.getElementById("toggleTimerBtn").textContent = "Boshlash";
-      document.getElementById("timerStatus").textContent = "Tayyor";
-      renderTimer();
+    function triggerSpotPulse() {
+      const bg = document.querySelector(".dalmatian-bg");
+      if (!bg) return;
+      bg.classList.remove("pulse-spots");
+      void bg.offsetWidth;
+      bg.classList.add("pulse-spots");
+    }
+
+    function toggleSpotColor() {
+      st.spotMode = st.spotMode === "green" ? "black" : "green";
+      saveState();
+      applySpotMode();
+      triggerSpotPulse();
+      haptic("success");
+      const d = L[st.lang] || L.uz;
+      showToast(st.spotMode === "green" ? d.spotGreenMsg : d.spotBlackMsg);
+    }
+
+    function haptic(type = "light") {
+      if (!tg || !tg.HapticFeedback) return;
+      if (type === "success") tg.HapticFeedback.notificationOccurred("success");
+      else tg.HapticFeedback.impactOccurred(type);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    function setLang(lang, btn) {
+      st.lang = lang;
+      saveState();
+      document.querySelectorAll(".lang-switch button").forEach((b) => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      render();
+    }
+
+    function bumpStreak() {
+      st.streak = (st.streak || 1) + 1;
+      saveState();
+      render();
+      haptic("success");
+      showToast(`🔥 Streak: ${st.streak} kun!`);
+    }
+
+    function selectGoal(goal, el) {
+      st.goal = goal;
+      saveState();
+      document.querySelectorAll("#goal-grid .choice-card").forEach((c) => c.classList.remove("active"));
+      el.classList.add("active");
+      render();
+    }
+
+    function selectGender(gender, el) {
+      st.gender = gender;
+      saveState();
+      document.querySelectorAll("#gender-grid [data-gender]").forEach((c) => c.classList.remove("active"));
+      el.classList.add("active");
+      render();
+    }
+
+    function cycleLevel() {
+      const order = ["beginner", "intermediate", "pro"];
+      const next = order[(order.indexOf(st.level || "beginner") + 1) % order.length];
+      st.level = next;
+      saveState();
+      render();
+    }
+
+    function selectPlace(place, el) {
+      st.place = place;
+      st.doneEx = [];
+      saveState();
+      document.querySelectorAll("#place-grid .choice-card").forEach((c) => c.classList.remove("active"));
+      el.classList.add("active");
+      const { mins } = calcTargets();
+      setTimerSec(mins * 60);
+      render();
+    }
+
+    function calcTargets() {
+      // Mifflin-St Jeor BMR formula
+      const genderOffset = st.gender === "female" ? -161 : 5;
+      const bmr = 10 * st.weight + 6.25 * (st.height || 175) - 5 * st.age + genderOffset;
+      const mult = st.level === "pro" ? 1.55 : st.level === "intermediate" ? 1.42 : 1.3;
+      const tdee = Math.round(bmr * mult);
+
+      const kcal = st.goal === "cut"
+        ? Math.max(1300, tdee - 400)
+        : st.goal === "bulk"
+          ? tdee + 350
+          : tdee;
+
+      const protein = Math.round(st.weight * (st.goal === "bulk" ? 2.0 : 1.7));
+      const fats = Math.round((kcal * 0.27) / 9);
+      const carbs = Math.max(50, Math.round((kcal - protein * 4 - fats * 9) / 4));
+
+      let mins = st.place === "gym" ? 45 : st.place === "workout" ? 38 : 30;
+      const noteLow = (st.userNote || "").toLowerCase();
+      if (noteLow.includes("20") || noteLow.includes("vaqt")) mins = 20;
+      if (noteLow.includes("15")) mins = 15;
+
+      return { kcal, mins, protein, fats, carbs };
+    }
+
+    function generateAiPlan() {
+      st.age = Math.max(12, Math.min(90, parseInt(document.getElementById("i-age").value, 10) || 27));
+      st.weight = Math.max(35, Math.min(220, parseInt(document.getElementById("i-weight").value, 10) || 75));
+      st.height = Math.max(120, Math.min(230, parseInt(document.getElementById("i-height").value, 10) || 175));
+      st.userNote = (document.getElementById("i-note").value || "").trim();
+      st.doneEx = [];
+      saveState();
+      const { mins } = calcTargets();
+      setTimerSec(mins * 60);
+      render();
+      haptic("success");
+      showToast("AI shaxsiy reja va ratsion tuzildi!");
+    }
+
+    function paintRing() {
+      const m = String(Math.floor(left / 60)).padStart(2, "0");
+      const s = String(left % 60).padStart(2, "0");
+      document.getElementById("clock-text").textContent = `${m}:${s}`;
+      const ratio = totalSec > 0 ? left / totalSec : 0;
+      ringEl.style.strokeDashoffset = RING_CIRC * (1 - ratio);
+    }
+
+    function setTimerSec(sec) {
+      totalSec = sec;
+      resetClock();
+    }
+
+    function resetClock() {
+      clearInterval(tid);
+      on = false;
+      left = totalSec;
+      const d = L[st.lang] || L.uz;
+      document.getElementById("btn-timer-toggle").textContent = d.start;
+      document.getElementById("clock-sub").textContent = d.ready;
+      paintRing();
     }
 
     function toggleTimer() {
-      const btn = document.getElementById("toggleTimerBtn");
-      const status = document.getElementById("timerStatus");
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        btn.textContent = "Davom ettirish";
-        status.textContent = "Pauza";
+      const d = L[st.lang] || L.uz;
+      const btn = document.getElementById("btn-timer-toggle");
+      if (on) {
+        clearInterval(tid);
+        on = false;
+        btn.textContent = d.start;
+        document.getElementById("clock-sub").textContent = d.ready;
         return;
       }
-      if (remaining <= 0) remaining = 45;
-      btn.textContent = "To'xtatish";
-      status.textContent = "Ishlamoqda";
-      timerInterval = setInterval(() => {
-        remaining--;
-        renderTimer();
-        if (remaining <= 0) {
-          clearInterval(timerInterval);
-          timerInterval = null;
-          btn.textContent = "Boshlash";
-          status.textContent = "Tugadi!";
-          if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+      on = true;
+      btn.textContent = d.pause;
+      document.getElementById("clock-sub").textContent = d.running;
+      tid = setInterval(() => {
+        if (left > 0) {
+          left--;
+          paintRing();
+        } else {
+          resetClock();
+          haptic("success");
+          showToast("Mashg‘ulot taymeri yakunlandi!");
         }
       }, 1000);
     }
 
-    function resetTimer() {
-      setPreset(45);
-    }
+    function renderWorkouts() {
+      const list = document.getElementById("workout-list");
+      const baseItems = WORKOUTS[st.place] || WORKOUTS.home;
+      const noteLow = (st.userNote || "").toLowerCase();
+      const hasKneePain = noteLow.includes("tizza") || noteLow.includes("oyoq");
+      const hasBackPain = noteLow.includes("bel");
+      const repScale = st.level === "pro" ? "5 podxod" : st.level === "intermediate" ? "4 podxod" : "3 podxod";
 
-    // Musiqa va MP3 ro'yxati
-    let tracks = [
-      { id: "t1", title: "Dalmatin Bass Boost", tag: "Gym • 128 BPM", url: "" },
-      { id: "t2", title: "Night Street Workout", tag: "Vorkaut • Dark", url: "" },
-      { id: "t3", title: "Cardio Pulse Energy", tag: "HIIT • 140 BPM", url: "" }
-    ];
-    let activeTrackId = null;
-
-    function renderTracks(filter = "") {
-      const list = document.getElementById("trackList");
-      const q = filter.trim().toLowerCase();
-      const filtered = tracks.filter(t => !q || t.title.toLowerCase().includes(q) || t.tag.toLowerCase().includes(q));
       list.innerHTML = "";
-      filtered.forEach(t => {
-        const div = document.createElement("div");
-        div.className = "track-item" + (t.id === activeTrackId ? " active" : "");
-        div.innerHTML = `
-          <div class="track-meta">
-            <strong>${t.title}</strong>
-            <small>${t.tag}</small>
-          </div>
-          <button class="btn" style="padding:6px 10px;font-size:12px;" onclick="selectTrack('${t.id}')">
-            ${t.id === activeTrackId ? "Tanlangan" : "Tanlash"}
-          </button>
-        `;
-        list.appendChild(div);
-      });
-    }
+      baseItems.forEach((ex, idx) => {
+        let title = ex.name;
+        let meta = ex.meta.replace("4 x", repScale + " x").replace("3 x", repScale + " x");
 
-    function filterTracks() {
-      renderTracks(document.getElementById("musicSearchInput").value);
-    }
+        if (hasKneePain && (title.includes("Sakrash") || title.includes("Prisedaniya") || title.includes("Yugurish"))) {
+          title = "AI Moslashtirilgan: Qo‘l va yelka razminkasi (Tizzaga yuklamasiz)";
+          meta = `${repScale} • Bo‘g‘imlarni asrovchi yumshoq rejim`;
+        } else if (hasBackPain && title.includes("Planka")) {
+          title = "AI Moslashtirilgan: Yengil nafas va cho‘zilish (Bel uchun xavfsiz)";
+          meta = "3 daqiqa • Umurtqa pog‘onasini bo‘shashtirish";
+        }
 
-    function handleMp3Upload(event) {
-      const files = Array.from(event.target.files || []);
-      files.forEach((file, idx) => {
-        const url = URL.createObjectURL(file);
-        const id = "mp3_" + Date.now() + "_" + idx;
-        tracks.unshift({ id, title: file.name.replace(/\.[^/.]+$/, ""), tag: "Yuklangan MP3", url });
-      });
-      renderTracks(document.getElementById("musicSearchInput").value);
-      if (files[0]) {
-        selectTrack(tracks[0].id);
-      }
-    }
-
-    function selectTrack(id) {
-      const track = tracks.find(t => t.id === id);
-      if (!track) return;
-      activeTrackId = id;
-      document.getElementById("nowPlayingLabel").textContent = track.title;
-      const player = document.getElementById("audioPlayer");
-      if (track.url) {
-        player.src = track.url;
-        player.play().catch(() => {});
-      }
-      renderTracks(document.getElementById("musicSearchInput").value);
-    }
-
-    // Kaloriya hisoblagich
-    let meals = JSON.parse(localStorage.getItem("fitmani_meals_5d") || "[]");
-
-    function renderMeals() {
-      const list = document.getElementById("mealList");
-      list.innerHTML = "";
-      let total = 0;
-      meals.forEach((m, i) => {
-        total += Number(m.kcal) || 0;
+        const isDone = st.doneEx.includes(idx);
         const row = document.createElement("div");
-        row.className = "meal-item";
-        row.innerHTML = `
-          <span>${m.name}</span>
-          <span>
-            <strong style="color:var(--neon);margin-right:8px;">${m.kcal} kkal</strong>
-            <button class="del-btn" onclick="removeMeal(${i})">✕</button>
-          </span>
-        `;
+        row.className = "ex-row" + (isDone ? " done" : "");
+        row.innerHTML = `<div><strong>${title}</strong><span>${meta}</span></div><div class="ex-check">${isDone ? "✓" : ""}</div>`;
+        row.onclick = () => {
+          if (st.doneEx.includes(idx)) st.doneEx = st.doneEx.filter((i) => i !== idx);
+          else st.doneEx.push(idx);
+          saveState();
+          renderWorkouts();
+        };
         list.appendChild(row);
       });
-      document.getElementById("totalKcal").textContent = total + " kkal";
-      localStorage.setItem("fitmani_meals_5d", JSON.stringify(meals));
     }
 
-    function addMeal() {
-      const nameEl = document.getElementById("mealNameInput");
-      const kcalEl = document.getElementById("mealKcalInput");
-      const name = nameEl.value.trim();
-      const kcal = parseInt(kcalEl.value, 10);
-      if (!name || isNaN(kcal) || kcal <= 0) return;
-      meals.unshift({ name, kcal });
-      nameEl.value = "";
-      kcalEl.value = "";
-      renderMeals();
+    function searchMusic(presetQuery) {
+      const q = (presetQuery || document.getElementById("music-query").value || "").toLowerCase();
+      const box = document.getElementById("track-list");
+      box.innerHTML = "";
+      TRACKS.filter((t) => !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q) || q.includes("workout"))
+        .forEach((t, idx) => {
+          const row = document.createElement("div");
+          row.className = "track-row" + (currentTrackIdx === idx ? " playing" : "");
+          row.innerHTML = `<div><strong>${t.title}</strong><span>${t.artist}</span></div><button class="btn-soft">${currentTrackIdx === idx ? "⏸" : "▶"}</button>`;
+          row.onclick = () => playTrack(idx, t);
+          box.appendChild(row);
+        });
     }
 
-    function removeMeal(index) {
-      meals.splice(index, 1);
-      renderMeals();
-    }
-
-    function clearMeals() {
-      meals = [];
-      renderMeals();
-    }
-
-    function sendSummaryToBot() {
-      const total = meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0);
-      const payload = JSON.stringify({
-        app: "FITMANI_5D",
-        timer_remaining_sec: remaining,
-        total_kcal: total,
-        meals_count: meals.length
-      });
-      if (tg) {
-        tg.sendData(payload);
-      } else {
-        alert("FITMANI 5D natijasi: " + total + " kkal, taymer: " + remaining + "s");
+    function playTrack(idx, track) {
+      const audio = document.getElementById("real-audio");
+      if (currentTrackIdx === idx && !audio.paused) {
+        audio.pause();
+        currentTrackIdx = -1;
+        searchMusic();
+        return;
       }
+      currentTrackIdx = idx;
+      audio.src = track.url;
+      audio.play().catch(() => {});
+      searchMusic();
+      showToast(`Ijro: ${track.title}`);
     }
 
-    renderTimer();
-    renderTracks();
-    renderMeals();
+    function loadLocalMp3(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const audio = document.getElementById("real-audio");
+      audio.src = URL.createObjectURL(file);
+      audio.play().catch(() => {});
+      showToast(`MP3 yuklandi: ${file.name}`);
+    }
+
+    function quickAddFood(name, kcal) {
+      st.foodLog.push({ name, kcal });
+      saveState();
+      renderFoodLog();
+      render();
+      showToast(`+${kcal} kkal qo‘shildi`);
+    }
+
+    function addFood() {
+      const name = document.getElementById("food-name").value.trim();
+      const kcal = parseInt(document.getElementById("food-kcal").value, 10);
+      if (!name || !kcal) return;
+      st.foodLog.push({ name, kcal });
+      saveState();
+      document.getElementById("food-name").value = "";
+      document.getElementById("food-kcal").value = "";
+      renderFoodLog();
+      render();
+    }
+
+    function renderFoodLog() {
+      const box = document.getElementById("food-log-list");
+      const { kcal: targetKcal } = calcTargets();
+      let eaten = 0;
+      box.innerHTML = "";
+      st.foodLog.forEach((f, idx) => {
+        eaten += f.kcal;
+        const row = document.createElement("div");
+        row.className = "food-row";
+        row.innerHTML = `<span>${f.name}</span><span>${f.kcal} kkal <button class="btn-soft" style="padding:2px 7px;margin-left:6px" onclick="removeFood(${idx})">✕</button></span>`;
+        box.appendChild(row);
+      });
+      document.getElementById("st-eaten-kcal").textContent = eaten;
+      const rem = Math.max(0, targetKcal - eaten);
+      document.getElementById("food-remain-badge").textContent = `Qoldi: ${rem} kkal`;
+    }
+
+    function removeFood(idx) {
+      st.foodLog.splice(idx, 1);
+      saveState();
+      renderFoodLog();
+      render();
+    }
+
+    function scrollToSec(id, btn) {
+      document.querySelectorAll(".dock-btn").forEach((b) => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function render() {
+      const d = L[st.lang] || L.uz;
+      const { kcal, mins, protein, fats, carbs } = calcTargets();
+      applySpotMode();
+
+      document.getElementById("t-tagline").textContent = d.tagline;
+      document.getElementById("t-hello").textContent = d.hello(uname);
+      document.getElementById("t-sub").textContent = d.sub;
+      document.getElementById("t-streak").textContent = `🔥 ${st.streak || 1} kun streak`;
+      document.getElementById("lbl-norma").textContent = d.norma;
+      document.getElementById("lbl-eaten").textContent = d.eaten;
+      document.getElementById("lbl-dur").textContent = d.dur;
+      document.getElementById("lbl-macro-p").textContent = d.macroP;
+      document.getElementById("lbl-macro-f").textContent = d.macroF;
+      document.getElementById("lbl-macro-c").textContent = d.macroC;
+
+      document.getElementById("t-goal-title").textContent = d.goalTitle;
+      document.getElementById("lbl-male").textContent = d.male;
+      document.getElementById("lbl-female").textContent = d.female;
+      document.getElementById("lbl-cut").textContent = d.cut;
+      document.getElementById("lbl-bulk").textContent = d.bulk;
+      document.getElementById("lbl-fit").textContent = d.fit;
+      document.getElementById("lbl-home").textContent = d.home;
+      document.getElementById("lbl-gym").textContent = d.gym;
+      document.getElementById("lbl-workout").textContent = d.workout;
+      document.getElementById("lbl-age").textContent = d.age;
+      document.getElementById("lbl-weight").textContent = d.weight;
+      document.getElementById("lbl-height").textContent = d.height;
+      document.getElementById("btn-save-prof").textContent = d.aiBtn;
+
+      document.getElementById("t-timer-title").textContent = d.timerTitle;
+      document.getElementById("btn-timer-reset").textContent = d.reset;
+      document.getElementById("btn-plan-min").textContent = `${mins}m`;
+      document.getElementById("t-music-title").textContent = d.musicTitle;
+      document.getElementById("btn-upload-mp3").textContent = d.uploadMp3;
+      document.getElementById("btn-search-music").textContent = d.searchBtn;
+      document.getElementById("t-food-title").textContent = d.foodTitle;
+      document.getElementById("btn-add-food").textContent = d.addBtn;
+
+      document.getElementById("nav-home").textContent = d.navHome;
+      document.getElementById("nav-timer").textContent = d.navTimer;
+      document.getElementById("nav-music").textContent = d.navMusic;
+      document.getElementById("nav-food").textContent = d.navFood;
+
+      document.getElementById("st-target-kcal").textContent = kcal;
+      document.getElementById("st-session-min").textContent = `${mins} daq`;
+      document.getElementById("st-macro-p").textContent = `${protein}g`;
+      document.getElementById("st-macro-f").textContent = `${fats}g`;
+      document.getElementById("st-macro-c").textContent = `${carbs}g`;
+      document.getElementById("t-timer-mode").textContent = `${mins} daqiqa reja`;
+
+      const lvlIcon = st.level === "pro" ? "🔥" : st.level === "intermediate" ? "⚡" : "🌱";
+      const lvlText = st.level === "pro" ? "Pro" : st.level === "intermediate" ? "O‘rta" : "Boshlang‘ich";
+      const lvlBtn = document.getElementById("btn-level-toggle");
+      if (lvlBtn) lvlBtn.innerHTML = `<span>${lvlIcon}</span><b>${lvlText}</b>`;
+
+      const noteExtra = st.userNote ? ` Sizning izohingiz («${st.userNote}») asosida mashqlar avtomatik moslashtirildi.` : "";
+      document.getElementById("ai-advice-box").textContent =
+        `AI Murabbiy (${st.gender === "female" ? d.female : d.male}, ${st.age} yosh, ${st.height} sm, ${st.weight} kg): Kunlik ${kcal} kkal (${protein}g oqsil, ${fats}g yog‘, ${carbs}g uglevod) va ${mins} daqiqalik reja.${noteExtra}`;
+
+      document.querySelectorAll("#gender-grid [data-gender]").forEach((c) => {
+        c.classList.toggle("active", c.dataset.gender === st.gender);
+      });
+      document.querySelectorAll("#goal-grid .choice-card").forEach((c) => {
+        c.classList.toggle("active", c.dataset.goal === st.goal);
+      });
+      document.querySelectorAll("#place-grid .choice-card").forEach((c) => {
+        c.classList.toggle("active", c.dataset.place === st.place);
+      });
+
+      renderWorkouts();
+      renderFoodLog();
+    }
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      btn.classList.remove("btn-kick");
+      void btn.offsetWidth;
+      btn.classList.add("btn-kick");
+      triggerSpotPulse();
+    });
+
+    document.getElementById("i-age").value = st.age;
+    document.getElementById("i-weight").value = st.weight;
+    document.getElementById("i-height").value = st.height || 175;
+    document.getElementById("i-note").value = st.userNote || "";
+    totalSec = calcTargets().mins * 60;
+    applySpotMode();
+    resetClock();
+    render();
+    searchMusic("workout phonk energy");
   </script>
 </body>
 </html>

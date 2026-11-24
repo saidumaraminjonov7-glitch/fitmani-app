@@ -357,6 +357,11 @@
       white-space: nowrap;
     }
 
+    .btn-amber:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
     .btn-red {
       background: var(--spot-red);
       color: var(--white);
@@ -490,12 +495,19 @@
       background: #fff1f2;
       border-left: 4px solid var(--spot-red);
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 12px 13px;
       margin-top: 10px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-dark);
+      line-height: 1.55;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    .ai-note strong {
       color: var(--spot-red-deep);
-      line-height: 1.45;
+      font-weight: 900;
     }
 
     /* Bottom Dock */
@@ -632,7 +644,7 @@
     <section class="card" id="sec-plan">
       <div class="card-head">
         <h2 id="t-goal-title">AI Shaxsiylashtirish</h2>
-        <span class="badge-red" id="t-sched-badge">Mifflin-St Jeor AI</span>
+        <span class="badge-red" id="t-sched-badge">Groq AI Coach</span>
       </div>
 
       <div class="grid-3" id="gender-grid">
@@ -674,7 +686,7 @@
       </div>
 
       <div class="ai-note" id="ai-advice-box">
-        AI Murabbiy: Parametrlaringizni kiriting va "AI Reja" tugmasini bosing — sizga mos ratsion va mashq tuziladi.
+        AI Murabbiy: Parametrlaringizni kiriting va "AI Reja" tugmasini bosing — sizga mos jonli AI ratsion va mashq tuziladi.
       </div>
     </section>
 
@@ -754,6 +766,8 @@
   </nav>
 
   <script>
+    const AI_SERVER_URL = "https://fitmani-bot-production.up.railway.app/api/ai";
+
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
       tg.ready();
@@ -774,6 +788,7 @@
       weight: 75,
       height: 175,
       userNote: "",
+      aiPlanText: "",
       streak: 1,
       spotMode: "black",
       doneEx: [],
@@ -954,6 +969,16 @@
       localStorage.setItem("fitmani_cola_v2", JSON.stringify(st));
     }
 
+    function formatAiText(raw) {
+      const escaped = String(raw || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      return escaped
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>");
+    }
+
     function applySpotMode() {
       const isGreen = st.spotMode === "green";
       document.body.classList.toggle("spot-green", isGreen);
@@ -1046,7 +1071,6 @@
     }
 
     function calcTargets() {
-      // Mifflin-St Jeor BMR formula
       const genderOffset = st.gender === "female" ? -161 : 5;
       const bmr = 10 * st.weight + 6.25 * (st.height || 175) - 5 * st.age + genderOffset;
       const mult = st.level === "pro" ? 1.55 : st.level === "intermediate" ? 1.42 : 1.3;
@@ -1070,18 +1094,64 @@
       return { kcal, mins, protein, fats, carbs };
     }
 
-    function generateAiPlan() {
+    async function generateAiPlan() {
       st.age = Math.max(12, Math.min(90, parseInt(document.getElementById("i-age").value, 10) || 27));
       st.weight = Math.max(35, Math.min(220, parseInt(document.getElementById("i-weight").value, 10) || 75));
       st.height = Math.max(120, Math.min(230, parseInt(document.getElementById("i-height").value, 10) || 175));
       st.userNote = (document.getElementById("i-note").value || "").trim();
       st.doneEx = [];
       saveState();
-      const { mins } = calcTargets();
+
+      const { kcal, mins, protein, fats, carbs } = calcTargets();
       setTimerSec(mins * 60);
       render();
-      haptic("success");
-      showToast("AI shaxsiy reja va ratsion tuzildi!");
+
+      const btn = document.getElementById("btn-save-prof");
+      const adviceBox = document.getElementById("ai-advice-box");
+      const d = L[st.lang] || L.uz;
+
+      const langName = st.lang === "ru" ? "rus tilida" : st.lang === "en" ? "ingliz tilida" : "o'zbek tilida";
+      const genderLabel = st.gender === "female" ? d.female : d.male;
+      const goalLabel = st.goal === "bulk" ? d.bulk : st.goal === "fit" ? d.fit : d.cut;
+      const placeLabel = st.place === "gym" ? d.gym : st.place === "workout" ? d.workout : d.home;
+      const levelLabel = st.level === "pro" ? "Pro" : st.level === "intermediate" ? "O'rta" : "Boshlang'ich";
+
+      const prompt =
+        `Foydalanuvchi ma'lumotlari: Jinsi: ${genderLabel}, Yoshi: ${st.age}, Vazni: ${st.weight} kg, Bo'yi: ${st.height} sm, ` +
+        `Darajasi: ${levelLabel}, Maqsadi: ${goalLabel}, Mashq joyi: ${placeLabel}, Mashq vaqti: ${mins} daqiqa. ` +
+        `Kunlik norma: ${kcal} kkal (Oqsil: ${protein}g, Yog': ${fats}g, Uglevod: ${carbs}g). ` +
+        (st.userNote ? `Maxsus izoh/cheklov: "${st.userNote}". ` : "") +
+        `Javobni faqat ${langName} yoz. Unga: 1) Bugungi 3 mahal aniq ovqatlanish menyusi (gramm va taxminiy kaloriyasi bilan), ` +
+        `2) ${mins} daqiqalik ${placeLabel} mashg'ulot ketma-ketligi, 3) Qisqa murabbiy tavsiyasini lo'nda va tushunarli qilib ber.`;
+
+      btn.disabled = true;
+      btn.textContent = "⏳ AI...";
+      adviceBox.innerHTML = "⏳ <strong>AI Murabbiy</strong> siz uchun shaxsiy reja va ratsion tuzmoqda...";
+
+      try {
+        const resp = await fetch(AI_SERVER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await resp.json();
+        if (!resp.ok || !data.reply) {
+          throw new Error(data.error || "Server javob bermadi");
+        }
+        st.aiPlanText = data.reply;
+        saveState();
+        adviceBox.innerHTML = formatAiText(st.aiPlanText);
+        haptic("success");
+        showToast("✨ AI shaxsiy reja tayyor!");
+      } catch (err) {
+        const noteExtra = st.userNote ? ` Sizning izohingiz («${st.userNote}») hisobga olindi.` : "";
+        const fallback = `AI Murabbiy (${genderLabel}, ${st.age} yosh, ${st.height} sm, ${st.weight} kg): Kunlik ${kcal} kkal (${protein}g oqsil, ${fats}g yog‘, ${carbs}g uglevod) va ${mins} daqiqalik reja.${noteExtra}\n\n⚠️ Serverga ulanishda xatolik: ${err.message}`;
+        adviceBox.innerHTML = formatAiText(fallback);
+        showToast("Serverga ulanib bo'lmadi");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = d.aiBtn;
+      }
     }
 
     function paintRing() {
@@ -1312,9 +1382,14 @@
       const lvlBtn = document.getElementById("btn-level-toggle");
       if (lvlBtn) lvlBtn.innerHTML = `<span>${lvlIcon}</span><b>${lvlText}</b>`;
 
-      const noteExtra = st.userNote ? ` Sizning izohingiz («${st.userNote}») asosida mashqlar avtomatik moslashtirildi.` : "";
-      document.getElementById("ai-advice-box").textContent =
-        `AI Murabbiy (${st.gender === "female" ? d.female : d.male}, ${st.age} yosh, ${st.height} sm, ${st.weight} kg): Kunlik ${kcal} kkal (${protein}g oqsil, ${fats}g yog‘, ${carbs}g uglevod) va ${mins} daqiqalik reja.${noteExtra}`;
+      const adviceBox = document.getElementById("ai-advice-box");
+      if (st.aiPlanText) {
+        adviceBox.innerHTML = formatAiText(st.aiPlanText);
+      } else {
+        const noteExtra = st.userNote ? ` Sizning izohingiz («${st.userNote}») asosida mashqlar moslashtiriladi.` : "";
+        adviceBox.textContent =
+          `AI Murabbiy (${st.gender === "female" ? d.female : d.male}, ${st.age} yosh, ${st.height} sm, ${st.weight} kg): Kunlik ${kcal} kkal (${protein}g oqsil, ${fats}g yog‘, ${carbs}g uglevod) va ${mins} daqiqalik reja.${noteExtra} Jonli AI menyu va mashqlarni olish uchun "✨ AI Reja" tugmasini bosing.`;
+      }
 
       document.querySelectorAll("#gender-grid [data-gender]").forEach((c) => {
         c.classList.toggle("active", c.dataset.gender === st.gender);

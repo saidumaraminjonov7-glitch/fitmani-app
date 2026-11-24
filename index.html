@@ -3,29 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FITMANI — Shaxsiy sog‘lom odat va AI ratsion</title>
+  <title>FITMANI — AI Fitness, Nutrition &amp; Mind OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* =========================================================================
+       1. DESIGN TOKENS — SLATE-GRAPHITE BENTO GLASSMORPHISM & VIOLET-GOLD MIND
+       ========================================================================= */
     :root {
-      --spot-red: #e32636;
-      --spot-red-deep: #a8101d;
-      --spot-red-bright: #ff3848;
-      --spot-color: #090909;
-      --spot-opacity: 0.42;
-      --amber: #f7b519;
-      --amber-text: #1b1404;
-      --white: #ffffff;
-      --card-red: #b81220;
-      --card-red-2: #990d19;
-      --ink-dark: #181818;
-      --ink-muted: #52525b;
+      --bg-base: #0b0d12;
+      --bg-card: rgba(24, 28, 38, 0.88);
+      --bg-card-soft: rgba(32, 37, 50, 0.74);
+      --border-glass: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.28);
+
+      /* Red / Green Dalmatian Fitness Theme */
+      --accent: #f43f5e;
+      --accent-deep: #be123c;
+      --accent-glow: rgba(244, 63, 94, 0.28);
+      --accent-soft: rgba(244, 63, 94, 0.14);
+      --spot-color: rgba(244, 63, 94, 0.13);
+
+      /* Semantic Status Colors */
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --blue: #38bdf8;
+
+      /* Distinct Violet & Gold Psychology / Mindset Tokens */
+      --violet: #8b5cf6;
+      --violet-deep: #6d28d9;
+      --violet-glow: rgba(139, 92, 246, 0.36);
+      --violet-soft: rgba(139, 92, 246, 0.16);
+      --gold: #fbbf24;
+
+      /* Typography */
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     body.spot-green {
-      --spot-color: #10b94b;
-      --spot-opacity: 0.48;
+      --accent: #10b981;
+      --accent-deep: #047857;
+      --accent-glow: rgba(16, 185, 129, 0.28);
+      --accent-soft: rgba(16, 185, 129, 0.14);
+      --spot-color: rgba(16, 185, 129, 0.14);
     }
 
     * {
@@ -33,795 +59,1137 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      background: var(--bg-base);
+      color: var(--text-main);
     }
 
     body {
-      position: relative;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 118, 128, 0.34), transparent 52%),
-        linear-gradient(180deg, #e52737 0%, #c91828 54%, #a6101d 100%);
-      color: var(--white);
       min-height: 100vh;
-      padding: 14px 14px 124px;
-      overflow-x: hidden;
+      padding: 12px 12px 110px;
+      position: relative;
     }
 
-    /* Bold organic Dalmatian spots layer behind cards */
-    .dalmatian-bg {
+    /* Ambient Dalmatian Spots Layer */
+    .ambient-bg {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
       overflow: hidden;
+      background:
+        radial-gradient(circle at 14% 8%, var(--spot-color), transparent 46%),
+        radial-gradient(circle at 86% 24%, rgba(139, 92, 246, 0.10), transparent 44%),
+        radial-gradient(circle at 50% 92%, var(--spot-color), transparent 50%);
     }
 
     .d-spot {
       position: absolute;
       background: var(--spot-color);
-      opacity: var(--spot-opacity);
-      transition: background-color 0.35s var(--ease), opacity 0.35s var(--ease), transform 0.55s var(--spring);
-      animation: spotDrift 8s ease-in-out infinite alternate;
+      filter: blur(24px);
+      transition: background-color 0.4s var(--ease), transform 0.6s var(--spring);
+      animation: floatSpot 12s ease-in-out infinite alternate;
+    }
+    .d-spot.s1 { width: 185px; height: 140px; top: -24px; left: -30px; border-radius: 62% 38% 55% 45%; }
+    .d-spot.s2 { width: 120px; height: 95px; top: 18%; left: 45%; border-radius: 44% 56% 39% 61%; animation-delay: -2.5s; }
+    .d-spot.s3 { width: 155px; height: 125px; top: 34%; right: -35px; border-radius: 41% 59% 35% 65%; animation-delay: -4.5s; }
+    .d-spot.s4 { width: 170px; height: 130px; bottom: 14%; left: -25px; border-radius: 52% 48% 63% 37%; animation-delay: -6.5s; }
+
+    @keyframes floatSpot {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(12px, -14px) scale(1.07); }
     }
 
-    .dalmatian-bg.pulse-spots .d-spot {
-      animation: spotPulseKick 0.55s var(--spring), spotDrift 8s ease-in-out infinite alternate;
-    }
-
-    .d-spot.s1 { width: 112px; height: 86px; top: 3%; left: -24px; border-radius: 62% 38% 55% 45% / 48% 64% 36% 52%; transform: rotate(-18deg); }
-    .d-spot.s2 { width: 54px; height: 44px; top: 11%; left: 28%; border-radius: 44% 56% 39% 61% / 57% 41% 59% 43%; animation-delay: -1.4s; }
-    .d-spot.s3 { width: 124px; height: 92px; top: 5%; right: -30px; border-radius: 41% 59% 35% 65% / 60% 38% 62% 40%; transform: rotate(22deg); animation-delay: -2.8s; }
-    .d-spot.s4 { width: 44px; height: 36px; top: 24%; right: 6%; border-radius: 62% 38% 48% 52% / 42% 58% 42% 58%; animation-delay: -3.5s; }
-    .d-spot.s5 { width: 96px; height: 74px; top: 37%; left: -26px; border-radius: 52% 48% 63% 37% / 47% 53% 47% 53%; animation-delay: -4.2s; }
-    .d-spot.s6 { width: 72px; height: 56px; top: 50%; right: -18px; border-radius: 38% 62% 55% 45% / 54% 46% 54% 46%; animation-delay: -2.1s; }
-    .d-spot.s7 { width: 108px; height: 82px; bottom: 22%; left: -26px; border-radius: 64% 36% 42% 58% / 48% 61% 39% 52%; animation-delay: -5.1s; }
-    .d-spot.s8 { width: 48px; height: 38px; bottom: 17%; left: 34%; border-radius: 47% 53% 60% 40% / 56% 44% 56% 44%; animation-delay: -1.8s; }
-    .d-spot.s9 { width: 98px; height: 76px; bottom: 15%; right: -22px; border-radius: 49% 51% 37% 63% / 62% 39% 61% 38%; animation-delay: -3.9s; }
-
-    body > *:not(.dalmatian-bg):not(.toast):not(.dock-wrap) {
+    .shell {
       position: relative;
       z-index: 1;
-    }
-
-    @keyframes spotDrift {
-      0% { translate: 0px 0px; }
-      100% { translate: 5px -7px; }
-    }
-
-    @keyframes spotPulseKick {
-      0% { scale: 1; }
-      45% { scale: 1.14; }
-      100% { scale: 1; }
-    }
-
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Springy tactile animations */
-    button, .step-card, .ex-row, .track-row, .choice-card, .mood-chip, .preset-chip {
-      transition:
-        transform 0.24s var(--spring),
-        background-color 0.2s var(--ease),
-        box-shadow 0.2s var(--ease),
-        border-color 0.2s var(--ease);
-    }
-
-    button:hover, .step-card:hover, .ex-row:hover, .track-row:hover, .choice-card:hover, .mood-chip:hover, .preset-chip:hover {
-      transform: translateY(-2px);
-    }
-
-    button:active, .step-card:active, .ex-row:active, .track-row:active, .choice-card:active, .mood-chip:active, .preset-chip:active {
-      transform: scale(0.94);
-    }
-
-    button.btn-kick { animation: spotKick 0.38s var(--spring); }
-    @keyframes spotKick {
-      0% { transform: scale(0.92); }
-      45% { transform: scale(1.06) translateY(-2px); }
-      100% { transform: scale(1) translateY(0); }
-    }
-
-    /* Top Bar */
-    .topbar {
-      max-width: 540px;
-      margin: 0 auto 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      animation: fadeDown 0.4s var(--ease) both;
-    }
-
-    .brand { display: flex; align-items: center; gap: 10px; }
-
-    .brand-icon {
-      position: relative;
-      width: 44px;
-      height: 44px;
-      border-radius: 15px;
-      background: var(--white);
-      color: var(--spot-red);
-      font-weight: 900;
-      font-size: 21px;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 6px 16px rgba(60, 4, 9, 0.35);
-      overflow: hidden;
-    }
-
-    .brand-icon::after {
-      content: "";
-      position: absolute;
-      width: 13px;
-      height: 11px;
-      top: 4px;
-      right: 4px;
-      border-radius: 60% 40% 50% 50% / 45% 60% 40% 55%;
-      background: var(--spot-color);
-      opacity: 0.92;
-      transition: background-color 0.3s var(--ease);
-    }
-
-    .brand strong { display: block; font-size: 18px; font-weight: 900; letter-spacing: -0.3px; color: var(--white); }
-    .brand span { font-size: 11.5px; font-weight: 600; color: rgba(255, 255, 255, 0.94); }
-
-    .top-controls { display: flex; align-items: center; gap: 7px; }
-
-    .spot-toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--white);
-      color: var(--ink-dark);
-      border: 2px solid rgba(255, 255, 255, 0.85);
-      border-radius: 999px;
-      padding: 6px 11px;
-      font-size: 11.5px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.24);
-    }
-
-    .spot-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%;
-      background: var(--spot-color);
-      display: inline-block;
-      transition: background-color 0.3s var(--ease);
-    }
-
-    .lang-switch {
-      display: flex;
-      gap: 3px;
-      background: rgba(28, 25, 25, 0.48);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      border-radius: 999px;
-      padding: 3px;
-    }
-
-    .lang-switch button {
-      border: none;
-      background: transparent;
-      color: var(--white);
-      font-weight: 800;
-      font-size: 11px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    .lang-switch button.active {
-      background: var(--white);
-      color: var(--spot-red);
-    }
-
-    .app-shell {
-      max-width: 540px;
+      width: 100%;
+      max-width: 500px;
       margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
     }
 
-    /* Hero Card */
-    .hero-card {
-      background: linear-gradient(145deg, rgba(24, 24, 27, 0.88), rgba(15, 15, 18, 0.94));
-      border: 1.5px solid rgba(255, 255, 255, 0.22);
-      border-radius: 26px;
-      padding: 18px;
-      box-shadow: 0 14px 32px rgba(45, 2, 6, 0.38);
-      color: var(--white);
-    }
-
-    .hero-top {
+    /* =========================================================================
+       2. TOP BAR
+       ========================================================================= */
+    .topbar {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 14px;
     }
 
-    .hero-top h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.3px; }
-    .hero-top p { font-size: 12.5px; color: rgba(255, 255, 255, 0.78); margin-top: 3px; }
-
-    .streak-pill {
-      background: var(--amber);
-      color: var(--amber-text);
-      padding: 6px 11px;
-      border-radius: 999px;
-      font-size: 11.5px;
-      font-weight: 900;
-      white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(247, 181, 25, 0.35);
-      cursor: pointer;
-    }
-
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .stat-box {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 16px;
-      padding: 10px 8px;
-      text-align: center;
-    }
-
-    .stat-box strong { display: block; font-size: 16px; font-weight: 900; color: var(--amber); }
-    .stat-box span { font-size: 10.5px; font-weight: 700; color: rgba(255, 255, 255, 0.8); }
-
-    /* White Cards */
-    .card {
-      background: var(--white);
-      color: var(--ink-dark);
-      border-radius: 24px;
-      padding: 16px;
-      box-shadow: 0 12px 28px rgba(58, 3, 8, 0.28);
-    }
-
-    .card-head {
+    .brand {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 9px;
+      min-width: 0;
+      flex: 1;
     }
 
-    .card-head h2 { font-size: 16px; font-weight: 900; color: var(--ink-dark); }
-    .badge-red {
-      background: #fee2e2;
-      color: var(--spot-red-deep);
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 9px;
-      border-radius: 999px;
-    }
-
-    /* Choice Grids */
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-
-    .choice-card {
-      background: #f4f4f5;
-      border: 2px solid transparent;
-      border-radius: 16px;
-      padding: 10px 6px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--ink-dark);
-    }
-
-    .choice-card span { display: block; font-size: 18px; margin-bottom: 3px; }
-    .choice-card.active {
-      background: #fff1f2;
-      border-color: var(--spot-red);
-      color: var(--spot-red-deep);
-      box-shadow: 0 4px 12px rgba(227, 38, 54, 0.18);
-    }
-
-    .input-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
-    .field label { display: block; font-size: 11px; font-weight: 800; color: var(--ink-muted); margin-bottom: 4px; }
-
-    input, select {
-      width: 100%;
-      background: #f4f4f5;
-      color: var(--ink-dark);
-      border: 1.5px solid #d4d4d8;
-      border-radius: 13px;
-      padding: 9px 11px;
-      font-size: 13px;
-      font-weight: 700;
-      outline: none;
-    }
-
-    input:focus, select:focus { border-color: var(--spot-red); background: #fff; }
-
-    .btn-amber {
-      background: var(--amber);
-      color: var(--amber-text);
-      border: none;
-      border-radius: 14px;
-      padding: 10px 15px;
-      font-weight: 900;
-      font-size: 12.5px;
-      cursor: pointer;
-      box-shadow: 0 5px 14px rgba(247, 181, 25, 0.38);
-      white-space: nowrap;
-    }
-
-    .btn-amber:disabled {
-      opacity: 0.65;
-      cursor: wait;
-    }
-
-    .btn-red {
-      background: var(--spot-red);
-      color: var(--white);
-      border: none;
-      border-radius: 14px;
-      padding: 10px 15px;
-      font-weight: 900;
-      font-size: 12.5px;
-      cursor: pointer;
-      box-shadow: 0 5px 14px rgba(227, 38, 54, 0.34);
-    }
-
-    .btn-soft {
-      background: #f4f4f5;
-      color: var(--ink-dark);
-      border: 1.5px solid #e4e4e7;
-      border-radius: 13px;
-      padding: 8px 12px;
-      font-weight: 800;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    /* Ring Timer */
-    .ring-wrap {
+    .logo-badge {
       position: relative;
-      width: 176px;
-      height: 176px;
-      margin: 6px auto 12px;
-      display: grid;
-      place-items: center;
-    }
-
-    .ring-wrap svg {
-      position: absolute;
-      inset: 0;
-      transform: rotate(-90deg);
-    }
-
-    .ring-bg { fill: none; stroke: #f4f4f5; stroke-width: 12; }
-    .ring-fg {
-      fill: none;
-      stroke: var(--spot-red);
-      stroke-width: 12;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.35s var(--ease);
-    }
-
-    .ring-center { text-align: center; z-index: 1; }
-    .ring-center strong { display: block; font-size: 30px; font-weight: 900; color: var(--ink-dark); letter-spacing: -0.5px; }
-    .ring-center span { font-size: 11px; font-weight: 800; color: var(--ink-muted); }
-
-    .timer-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 7px; }
-
-    /* Workout Exercises */
-    .ex-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      background: #fafafa;
-      border: 1.5px solid #e4e4e7;
-      border-radius: 15px;
-      padding: 10px 12px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
-
-    .ex-row.done { background: #ecfdf5; border-color: #10b981; }
-    .ex-row strong { display: block; font-size: 13px; font-weight: 800; }
-    .ex-row span { font-size: 11.5px; color: var(--ink-muted); font-weight: 600; }
-    .ex-check {
-      width: 24px;
-      height: 24px;
-      border-radius: 8px;
-      border: 2px solid #d4d4d8;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-deep));
       display: grid;
       place-items: center;
       font-weight: 900;
-      font-size: 13px;
-      color: #fff;
+      font-size: 19px;
+      color: #ffffff;
+      box-shadow: 0 6px 20px var(--accent-glow);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .logo-badge::after {
+      content: "";
+      position: absolute;
+      width: 9px;
+      height: 8px;
+      top: 5px;
+      right: 5px;
+      border-radius: 60% 40% 50% 50%;
+      background: #0b0d12;
+      opacity: 0.74;
+    }
+
+    .brand-text { min-width: 0; flex: 1; }
+    .brand-text strong {
+      display: block;
+      font-size: 15.5px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .brand-text span {
+      display: block;
+      font-size: 10.8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       flex-shrink: 0;
     }
-    .ex-row.done .ex-check { background: #10b981; border-color: #10b981; }
 
-    /* Music Player */
-    .track-row {
+    .pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .pill-btn:active { transform: scale(0.95); }
+
+    .accent-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .lang-box {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 999px;
+      padding: 2px;
+    }
+    .lang-box button {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 4px 7px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .lang-box button.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    /* =========================================================================
+       3. VIEWS, BENTO CARDS & SHARED CONTROLS
+       ========================================================================= */
+    .view-page {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: viewIn 0.26s var(--ease);
+    }
+    .view-page.active { display: flex; }
+
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bento {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 22px;
+      padding: 15px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+    }
+
+    .bento-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 11px;
+      gap: 8px;
+    }
+    .bento-head h2 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .tag {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Medical & Time Disclaimers */
+    .doc-disclaimer {
+      margin-top: 9px;
+      padding: 8px 10px;
+      border-radius: 11px;
+      background: rgba(15, 23, 42, 0.58);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      font-size: 10.5px;
+      line-height: 1.44;
+      color: #94a3b8;
+    }
+
+    .time-warning-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(139, 92, 246, 0.18));
+      border: 1.5px solid rgba(251, 191, 36, 0.44);
+      border-radius: 18px;
+      padding: 12px 13px;
+      font-size: 11.6px;
+      line-height: 1.48;
+      color: #fde68a;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.12);
+    }
+
+    /* =========================================================================
+       4. TAB 1 — HOME HUD
+       ========================================================================= */
+    .hud-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .kcal-ring {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: grid;
+      place-items: center;
+    }
+    .kcal-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .kcal-ring circle { fill: none; stroke-width: 10; }
+    .kcal-ring .bg { stroke: rgba(148, 163, 184, 0.14); }
+    .kcal-ring .fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 0.5s var(--ease); }
+
+    .kcal-center { text-align: center; }
+    .kcal-center strong { display: block; font-size: 20px; font-weight: 900; }
+    .kcal-center span { font-size: 10px; color: var(--text-muted); font-weight: 700; }
+
+    .macro-bars { display: flex; flex-direction: column; gap: 9px; }
+    .m-item-top { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; margin-bottom: 4px; }
+    .m-track { height: 7px; background: rgba(148, 163, 184, 0.14); border-radius: 999px; overflow: hidden; }
+    .m-fill { height: 100%; border-radius: 999px; transition: width 0.4s var(--ease); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+
+    .mini-stat {
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border-glass);
+      border-radius: 18px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.2s var(--spring);
+    }
+    .mini-stat:active { transform: scale(0.96); }
+    .mini-stat .k { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+    .mini-stat .v { font-size: 18px; font-weight: 900; margin: 4px 0; }
+
+    /* Water Balance */
+    .water-bar-bg { height: 9px; background: rgba(56, 189, 248, 0.14); border-radius: 999px; overflow: hidden; margin: 8px 0 10px; }
+    .water-bar-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); border-radius: 999px; transition: width 0.35s var(--ease); }
+
+    /* Form & Chips */
+    .chip-card {
+      background: var(--bg-card-soft);
+      border: 1.5px solid var(--border-glass);
+      border-radius: 14px;
+      padding: 9px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: all 0.2s var(--ease);
+    }
+    .chip-card span { display: block; font-size: 17px; margin-bottom: 3px; }
+    .chip-card.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .field label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    input, textarea {
+      width: 100%;
+      background: rgba(15, 19, 28, 0.92);
+      border: 1.5px solid var(--border-glass);
+      border-radius: 13px;
+      padding: 10px 12px;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 11px 15px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 18px var(--accent-glow);
+      transition: transform 0.2s var(--spring), opacity 0.2s;
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      border-radius: 11px;
+      padding: 7px 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .btn-ghost:active { transform: scale(0.95); }
+
+    /* Real Mobile YouTube Anchor */
+    .yt-anchor {
+      background: rgba(239, 68, 68, 0.16);
+      border: 1px solid rgba(239, 68, 68, 0.46);
+      color: #fca5a5;
+      border-radius: 11px;
+      padding: 7px 11px;
+      font-size: 11.5px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .yt-anchor:active { transform: scale(0.95); }
+
+    .ai-box {
+      background: rgba(15, 19, 28, 0.84);
+      border: 1px solid var(--border-glass);
+      border-left: 3px solid var(--accent);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    /* =========================================================================
+       5. TAB 3 — EXERCISES & TIMER
+       ========================================================================= */
+    .timer-ring {
+      position: relative;
+      width: 158px;
+      height: 158px;
+      margin: 4px auto 12px;
+      display: grid;
+      place-items: center;
+    }
+    .timer-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .timer-ring .bg { fill: none; stroke: rgba(148, 163, 184, 0.14); stroke-width: 11; }
+    .timer-ring .fg { fill: none; stroke: var(--accent); stroke-width: 11; stroke-linecap: round; transition: stroke-dashoffset 0.3s linear; }
+    .timer-val { text-align: center; }
+    .timer-val strong { display: block; font-size: 30px; font-weight: 900; }
+    .timer-val span { font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; }
+
+    .ex-card {
+      background: var(--bg-card-soft);
+      border: 1.5px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 9px;
+    }
+    .ex-card.done { background: rgba(16, 185, 129, 0.11); border-color: rgba(16, 185, 129, 0.45); }
+    .ex-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .ex-title { font-size: 13.5px; font-weight: 800; }
+    .ex-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+    .ex-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 9px; }
+
+    .check-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(148, 163, 184, 0.35);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .ex-card.done .check-circle { background: var(--emerald); border-color: var(--emerald); color: #052e16; }
+
+    .ex-tip-box {
+      margin-top: 8px;
+      padding: 9px 10px;
+      background: rgba(11, 13, 18, 0.72);
+      border-radius: 11px;
+      font-size: 11.5px;
+      color: #cbd5e1;
+      line-height: 1.45;
+      display: none;
+    }
+    .ex-tip-box.open { display: block; }
+
+    /* =========================================================================
+       6. TAB 4 — DISTINCT VIOLET & GOLD PSYCHOLOGY & MINDSET ARENA
+       ========================================================================= */
+    .mind-hero {
+      background: linear-gradient(145deg, rgba(59, 30, 112, 0.92), rgba(26, 22, 54, 0.95));
+      border: 1.5px solid rgba(251, 191, 36, 0.42);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 12px 32px rgba(76, 29, 149, 0.38);
+      transition: transform 0.2s var(--spring);
+    }
+    .mind-hero.clickable:active { transform: scale(0.98); }
+
+    .mind-card {
+      background: rgba(29, 25, 56, 0.88);
+      border: 1.5px solid rgba(167, 139, 250, 0.28);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 10px 28px rgba(46, 16, 101, 0.28);
+    }
+
+    .btn-violet {
+      width: 100%;
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: #ffffff;
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 14px;
+      padding: 11px 15px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--violet-glow);
+    }
+    .btn-violet:active { transform: scale(0.97); }
+    .btn-violet:disabled { opacity: 0.6; cursor: wait; }
+
+    .mind-opt-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(139, 92, 246, 0.13);
+      border: 1.5px solid rgba(167, 139, 250, 0.28);
+      color: #f1f5f9;
+      border-radius: 13px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-top: 7px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+    .mind-opt-btn:hover { border-color: #a78bfa; background: rgba(139, 92, 246, 0.22); }
+    .mind-opt-btn.correct { background: rgba(16, 185, 129, 0.22); border-color: var(--emerald); }
+    .mind-opt-btn.wrong { background: rgba(244, 63, 94, 0.18); border-color: var(--accent); }
+
+    .mind-note-pill {
+      margin-top: 8px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      background: rgba(15, 13, 30, 0.78);
+      border-left: 3px solid var(--gold);
+      font-size: 12px;
+      line-height: 1.48;
+      color: #e2e8f0;
+      display: none;
+    }
+    .mind-note-pill.open { display: block; }
+
+    .lb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 11px;
+      border-radius: 13px;
+      background: rgba(15, 13, 30, 0.68);
+      border: 1px solid rgba(167, 139, 250, 0.18);
+      margin-top: 7px;
+      font-size: 12.5px;
+    }
+    .lb-row.me {
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.30), rgba(251, 191, 36, 0.18));
+      border-color: var(--gold);
+    }
+
+    /* =========================================================================
+       7. FOOD & MUSIC
+       ========================================================================= */
+    .food-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      background: #fafafa;
-      border: 1.5px solid #e4e4e7;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border-glass);
       border-radius: 14px;
-      padding: 9px 12px;
+      padding: 10px 12px;
+      margin-top: 8px;
+    }
+    .food-item strong { display: block; font-size: 12.8px; }
+    .food-item small { font-size: 11px; color: var(--text-muted); }
+
+    .track-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border-glass);
+      border-radius: 15px;
+      padding: 9px 11px;
       margin-top: 8px;
       cursor: pointer;
     }
-
-    .track-row.playing { background: #fff1f2; border-color: var(--spot-red); }
-    .track-row strong { display: block; font-size: 12.5px; font-weight: 800; }
-    .track-row span { font-size: 11px; color: var(--ink-muted); font-weight: 600; }
-
-    /* Presets & Food Log */
-    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .preset-chip {
-      background: #fffbeb;
-      color: #92400e;
-      border: 1px solid #fde68a;
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 11.5px;
-      font-weight: 800;
-      cursor: pointer;
+    .track-card.playing { background: var(--accent-soft); border-color: var(--accent); }
+    .track-art {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.06);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
     }
 
-    .food-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fafafa;
-      border: 1px solid #e4e4e7;
-      border-radius: 12px;
-      padding: 8px 11px;
-      margin-top: 7px;
-      font-size: 12.5px;
-      font-weight: 700;
-    }
-
-    .ai-note {
-      background: #fff1f2;
-      border-left: 4px solid var(--spot-red);
-      border-radius: 12px;
-      padding: 12px 13px;
-      margin-top: 10px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--ink-dark);
-      line-height: 1.55;
-      max-height: 360px;
-      overflow-y: auto;
-    }
-
-    .ai-note strong {
-      color: var(--spot-red-deep);
-      font-weight: 900;
-    }
-
-    /* Bottom Dock */
-    .dock-wrap {
+    /* =========================================================================
+       8. BOTTOM 6-TAB DOCK WITH HIGHLIGHTED VIOLET & GOLD TAFAKKUR TAB
+       ========================================================================= */
+    .nav-dock {
       position: fixed;
-      bottom: 12px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 24px);
-      max-width: 520px;
-      background: rgba(18, 18, 22, 0.94);
-      backdrop-filter: blur(12px);
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      width: calc(100% - 16px);
+      max-width: 500px;
+      background: rgba(15, 18, 26, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-strong);
       border-radius: 22px;
-      padding: 7px;
+      padding: 5px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
-      z-index: 50;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
+      z-index: 100;
     }
 
-    .dock-btn {
+    .nav-btn {
       background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.78);
-      border-radius: 15px;
-      padding: 7px 4px;
-      font-size: 10.5px;
-      font-weight: 800;
-      cursor: pointer;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      border-radius: 14px;
+      padding: 7px 1px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
+      font-size: 9.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+    .nav-btn span { font-size: 15px; }
+    .nav-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .dock-btn.active { background: var(--spot-red); color: var(--white); }
+    /* Standout Violet & Gold Highlight for Tafakkur Tab */
+    .nav-btn.mind-tab {
+      border-color: rgba(251, 191, 36, 0.42);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(251, 191, 36, 0.12));
+      color: #ede9fe;
+    }
+    .nav-btn.mind-tab.active {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      border-color: var(--gold);
+      color: #ffffff;
+      box-shadow: 0 4px 16px var(--violet-glow);
+    }
 
     .toast {
       position: fixed;
-      top: 16px;
+      top: 14px;
       left: 50%;
       transform: translateX(-50%) translateY(-24px);
-      background: var(--ink-dark);
-      color: var(--white);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 10px 16px;
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid var(--accent);
+      padding: 9px 16px;
       border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 800;
+      font-size: 12px;
+      font-weight: 700;
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s var(--ease);
       z-index: 999;
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+      max-width: 92vw;
+      text-align: center;
     }
-
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
-  <div class="dalmatian-bg" aria-hidden="true">
-    <span class="d-spot s1"></span><span class="d-spot s2"></span><span class="d-spot s3"></span>
-    <span class="d-spot s4"></span><span class="d-spot s5"></span><span class="d-spot s6"></span>
-    <span class="d-spot s7"></span><span class="d-spot s8"></span><span class="d-spot s9"></span>
+  <div class="ambient-bg" aria-hidden="true">
+    <span class="d-spot s1"></span>
+    <span class="d-spot s2"></span>
+    <span class="d-spot s3"></span>
+    <span class="d-spot s4"></span>
   </div>
 
-  <div class="toast" id="toast">Saqlandi!</div>
-  <audio id="real-audio" preload="none"></audio>
+  <div class="toast" id="toast">Saqlandi</div>
+  <audio id="audio-player" preload="none"></audio>
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-icon">F</div>
-      <div>
-        <strong>FITMANI</strong>
-        <span id="t-tagline">Shaxsiy sog‘lom odat va AI ratsion</span>
+  <div class="shell">
+    <!-- TOP HEADER -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-badge" onclick="toggleSpotTheme()">F</div>
+        <div class="brand-text">
+          <strong>FITMANI <span style="color:var(--accent);font-size:11px;">OS</span></strong>
+          <span id="t-tagline">Tana, Ratsion &amp; Tafakkur tizimi</span>
+        </div>
       </div>
-    </div>
-    <div class="top-controls">
-      <button class="spot-toggle-btn" id="btn-spot-toggle" onclick="toggleSpotColor()" title="Dog‘ rangini o‘zgartirish">
-        <span class="spot-dot" id="spot-dot-ic"></span>
-        <span id="spot-toggle-label">Qora dog‘</span>
-      </button>
-      <div class="lang-switch">
-        <button class="active" onclick="setLang('uz', this)">UZ</button>
-        <button onclick="setLang('ru', this)">RU</button>
-        <button onclick="setLang('en', this)">EN</button>
+      <div class="top-actions">
+        <button type="button" class="pill-btn" onclick="toggleSpotTheme()">
+          <span class="accent-dot"></span>
+          <span id="t-theme-lbl">Qizil</span>
+        </button>
+        <div class="lang-box">
+          <button type="button" class="active" onclick="setLang('uz', this)">UZ</button>
+          <button type="button" onclick="setLang('ru', this)">RU</button>
+          <button type="button" onclick="setLang('en', this)">EN</button>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="app-shell">
-    <!-- Hero Overview Card -->
-    <section class="hero-card" id="sec-home">
-      <div class="hero-top">
+    <!-- ===================================================================
+         TAB 1: ASOSIY (HOME HUD)
+         =================================================================== -->
+    <section class="view-page active" id="view-home">
+      <div class="bento">
+        <div class="bento-head">
+          <div>
+            <h2 id="t-greeting">Salom, Do‘stim!</h2>
+            <span style="font-size:11.5px;color:var(--text-muted);" id="t-goal-summary">Maqsad: Ozish • 2150 kkal/kun</span>
+          </div>
+          <span class="tag" style="cursor:pointer;" onclick="bumpStreak()" id="t-streak">🔥 1 kun</span>
+        </div>
+
+        <div class="hud-grid">
+          <div class="kcal-ring">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle class="bg" cx="60" cy="60" r="50"></circle>
+              <circle class="fg" id="hud-kcal-fg" cx="60" cy="60" r="50"></circle>
+            </svg>
+            <div class="kcal-center">
+              <strong id="hud-kcal-left">2150</strong>
+              <span id="t-kcal-rem">QOLDI KKAL</span>
+            </div>
+          </div>
+
+          <div class="macro-bars">
+            <div>
+              <div class="m-item-top"><span id="t-p-lbl">Oqsil (Protein)</span><span id="hud-p-val">0 / 128g</span></div>
+              <div class="m-track"><div class="m-fill" id="bar-p" style="width:0%;background:var(--emerald);"></div></div>
+            </div>
+            <div>
+              <div class="m-item-top"><span id="t-f-lbl">Yog‘ (Fats)</span><span id="hud-f-val">0 / 56g</span></div>
+              <div class="m-track"><div class="m-fill" id="bar-f" style="width:0%;background:var(--amber);"></div></div>
+            </div>
+            <div>
+              <div class="m-item-top"><span id="t-c-lbl">Uglevod (Carbs)</span><span id="hud-c-val">0 / 208g</span></div>
+              <div class="m-track"><div class="m-fill" id="bar-c" style="width:0%;background:var(--blue);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standout Violet & Gold Banner Card for Psychology & Mindset Arena -->
+      <div class="mind-hero clickable" style="cursor:pointer;" onclick="switchTab('view-mind', 3)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+          <div style="min-width:0;flex:1;">
+            <span style="font-size:10.5px;font-weight:800;color:var(--gold);letter-spacing:0.5px;" id="t-mind-badge">🧠 YANGI • PSIXOLOGIYA VA TAFAKKUR ARENASI</span>
+            <h3 style="font-size:15.5px;font-weight:900;margin-top:3px;color:#fff;" id="t-mind-banner-title">Aql, Diqqat va Strategik Fikrlash</h3>
+            <p style="font-size:11.5px;color:#ddd6fe;margin-top:3px;" id="home-mind-sub">1-bosqich • 0 XP • Reytingda #4 o‘rin</p>
+          </div>
+          <span style="background:var(--gold);color:#1e1b4b;font-weight:900;font-size:11.5px;padding:8px 12px;border-radius:12px;white-space:nowrap;flex-shrink:0;" id="t-mind-enter">Kirish →</span>
+        </div>
+      </div>
+
+      <!-- Water Balance Tracker -->
+      <div class="bento">
+        <div class="bento-head" style="margin-bottom:4px;">
+          <h2 id="t-water-title">💧 Kunlik suv balansi</h2>
+          <span class="tag" style="color:var(--blue);background:rgba(56,189,248,0.14);" id="water-val-lbl">0 / 2500 ml</span>
+        </div>
+        <div class="water-bar-bg">
+          <div class="water-bar-fill" id="water-bar" style="width:0%;"></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn-ghost" style="flex:1;" onclick="addWater(250)">+ 250 ml</button>
+          <button type="button" class="btn-ghost" style="flex:1;" onclick="addWater(500)">+ 500 ml</button>
+          <button type="button" class="btn-ghost" onclick="resetWater()">↺</button>
+        </div>
+      </div>
+
+      <!-- Quick Stat Cards -->
+      <div class="grid-2">
+        <div class="mini-stat" onclick="switchTab('view-workout', 2)">
+          <div class="k" id="t-card-ex">Bugungi mashqlar</div>
+          <div class="v" id="hud-ex-done">0 / 4</div>
+          <span style="font-size:11px;color:var(--emerald);font-weight:700;" id="t-card-ex-sub">Mashqlar &amp; YouTube →</span>
+        </div>
+        <div class="mini-stat" onclick="switchTab('view-ai', 1)">
+          <div class="k" id="t-card-ai">AI Shaxsiy Reja</div>
+          <div class="v" style="font-size:16px;padding:3px 0;" id="t-card-ai-val">Tayyor ✨</div>
+          <span style="font-size:11px;color:var(--accent);font-weight:700;" id="t-card-ai-sub">Reja tuzish →</span>
+        </div>
+      </div>
+
+      <!-- AI Coach Advice Card + Doctor Disclaimer -->
+      <div class="bento">
+        <div class="bento-head"><h2 id="t-coach-head">🤖 AI Murabbiy tavsiyasi</h2></div>
+        <div class="ai-box" id="home-ai-advice">
+          Shaxsiy menyu va mashqlaringizni avtomatik yaratish uchun <b>AI Reja</b> bo‘limiga o‘ting.
+        </div>
+        <div class="doc-disclaimer" id="t-doc-home">
+          ⚕️ Eslatma: Ushbu tavsiyalar umumiy ma’lumot xarakteriga ega. Sog‘lig‘ingiz, ovqatlanish va jismoniy yuklamalar borasida eng avvalo malakali shifokorlar bilan maslahatlashing.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 2: AI REJA (AI PERSONALIZATION)
+         =================================================================== -->
+    <section class="view-page" id="view-ai">
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-ai-title">🤖 AI Shaxsiy Reja Generator</h2>
+          <span class="tag">Groq Llama AI</span>
+        </div>
+
+        <div class="grid-3">
+          <div class="chip-card active" data-gender="male" onclick="setChoice('gender','male',this)"><span>👨</span><b id="lbl-male">Erkak</b></div>
+          <div class="chip-card" data-gender="female" onclick="setChoice('gender','female',this)"><span>👩</span><b id="lbl-female">Ayol</b></div>
+          <div class="chip-card active" id="lvl-chip" onclick="cycleLevel()"><span>🌱</span><b>Boshlang‘ich</b></div>
+        </div>
+
+        <div class="grid-3">
+          <div class="chip-card active" data-goal="cut" onclick="setChoice('goal','cut',this)"><span>🔥</span><b id="lbl-cut">Ozish</b></div>
+          <div class="chip-card" data-goal="bulk" onclick="setChoice('goal','bulk',this)"><span>💪</span><b id="lbl-bulk">Vazn olish</b></div>
+          <div class="chip-card" data-goal="fit" onclick="setChoice('goal','fit',this)"><span>⚡</span><b id="lbl-fit">Tonus</b></div>
+        </div>
+
+        <div class="grid-3">
+          <div class="chip-card active" data-place="home" onclick="setChoice('place','home',this)"><span>🏠</span><b id="lbl-home">Uyda</b></div>
+          <div class="chip-card" data-place="gym" onclick="setChoice('place','gym',this)"><span>🏋️</span><b id="lbl-gym">Zal</b></div>
+          <div class="chip-card" data-place="workout" onclick="setChoice('place','workout',this)"><span>🤸</span><b id="lbl-workout">Vorkaut</b></div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:10px;">
+          <div class="field"><label id="lbl-age">Yosh</label><input id="in-age" type="number" value="33" /></div>
+          <div class="field"><label id="lbl-weight">Vazn (kg)</label><input id="in-weight" type="number" value="75" /></div>
+          <div class="field"><label id="lbl-height">Bo‘y (sm)</label><input id="in-height" type="number" value="175" /></div>
+        </div>
+
+        <div class="field" style="margin-bottom:12px;">
+          <label id="lbl-note">Maxsus maqsad yoki cheklov</label>
+          <input id="in-note" type="text" placeholder="Masalan: 2 oyda 8 kg vazn olish, tizzam og‘riydi..." />
+        </div>
+
+        <button type="button" class="btn-primary" id="btn-gen-ai" onclick="generateFullAiPlan()">
+          ✨ AI Shaxsiy Reja va Menyuni Tuzish
+        </button>
+      </div>
+
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-ai-res">📋 AI Xulosasi</h2>
+          <span class="tag">Avto-sinxron</span>
+        </div>
+        <div class="ai-box" id="ai-full-advice">
+          Parametrlaringizni tanlab tugmani bosing — AI siz uchun <b>Mashqlar</b> ro‘yxati va <b>Kaloriya</b> menyusini avtomatik yaratadi.
+        </div>
+        <div class="doc-disclaimer" id="t-doc-ai">
+          ⚕️ Eslatma: Ushbu tavsiyalar umumiy ma’lumot xarakteriga ega. Sog‘lig‘ingiz, ovqatlanish va jismoniy yuklamalar borasida eng avvalo malakali shifokorlar bilan maslahatlashing.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 3: MASHQ (WORKOUTS & BULLETPROOF YOUTUBE)
+         =================================================================== -->
+    <section class="view-page" id="view-workout">
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-timer-title">⏱️ Interval &amp; Dam Olish Taymeri</h2>
+          <span class="tag" id="timer-badge">30 daqiqa</span>
+        </div>
+
+        <div class="timer-ring">
+          <svg width="158" height="158" viewBox="0 0 158 158">
+            <circle class="bg" cx="79" cy="79" r="68"></circle>
+            <circle class="fg" id="timer-fg" cx="79" cy="79" r="68"></circle>
+          </svg>
+          <div class="timer-val">
+            <strong id="timer-clock">30:00</strong>
+            <span id="timer-status">TAYYOR</span>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px;">
+          <button type="button" class="btn-primary" style="width:auto;padding:9px 18px;" id="btn-timer-start" onclick="toggleTimer()">Boshlash</button>
+          <button type="button" class="btn-ghost" onclick="resetTimer()">↺</button>
+          <button type="button" class="btn-ghost" onclick="setTimerSeconds(45)">45s</button>
+          <button type="button" class="btn-ghost" onclick="setTimerSeconds(90)">90s</button>
+          <button type="button" class="btn-ghost" id="btn-full-min" onclick="setTimerSeconds(calcTargets().mins * 60)">30m</button>
+        </div>
+      </div>
+
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-ex-title">🏋️ Bugungi Mashqlar</h2>
+          <span class="tag" id="ex-progress-tag">0 / 4 bajarildi</span>
+        </div>
+        <div id="exercise-container"></div>
+        <div class="doc-disclaimer" id="t-doc-workout">
+          ⚕️ Eslatma: Ushbu tavsiyalar umumiy ma’lumot xarakteriga ega. Sog‘lig‘ingiz, ovqatlanish va jismoniy yuklamalar borasida eng avvalo malakali shifokorlar bilan maslahatlashing.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 4: 🧠 TAFAKKUR (PSYCHOLOGY & MINDSET ARENA)
+         =================================================================== -->
+    <section class="view-page" id="view-mind">
+      <!-- Prominent Amber-Violet Time Control Warning + Live Session Clock -->
+      <div class="time-warning-banner">
+        <span style="font-size:19px;">⏳</span>
         <div>
-          <h1 id="t-hello">Salom, Do‘stim!</h1>
-          <p id="t-sub">Bugungi shaxsiy reja, taymer va AI ovqatlanish nazorati</p>
-        </div>
-        <div class="streak-pill" id="t-streak" onclick="bumpStreak()">🔥 1 kun streak</div>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-box">
-          <strong id="st-target-kcal">2150</strong>
-          <span id="lbl-norma">Kunlik norma</span>
-        </div>
-        <div class="stat-box">
-          <strong id="st-eaten-kcal">0</strong>
-          <span id="lbl-eaten">Iste’mol kkal</span>
-        </div>
-        <div class="stat-box">
-          <strong id="st-session-min">30 daq</strong>
-          <span id="lbl-dur">Mashq vaqti</span>
+          <span id="t-time-warn"><strong>Vaqtingizni o‘zingiz nazorat qiling!</strong> Ushbu bo‘lim aql, psixologik barqarorlik va tafakkurni charxlash uchun yaratilgan — ekran qarshisida ortiqcha qolib ketmang.</span>
+          <div style="margin-top:5px;font-weight:900;color:#ffffff;" id="mind-session-clock">Bo‘limdagi vaqtingiz: 00:00</div>
         </div>
       </div>
-      <div class="hero-stats" style="margin-top: 8px;">
-        <div class="stat-box">
-          <strong id="st-macro-p">128g</strong>
-          <span id="lbl-macro-p">Oqsil (Protein)</span>
+
+      <!-- Progressive Stage & XP Hero -->
+      <div class="mind-hero">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;">
+          <div>
+            <span style="font-size:10.5px;font-weight:800;color:#c4b5fd;letter-spacing:0.6px;">NEURO &amp; MINDSET LAB</span>
+            <h2 style="font-size:17px;font-weight:900;color:#ffffff;margin-top:2px;" id="mind-lvl-title">1-bosqich: Impuls Nazorati</h2>
+          </div>
+          <span style="background:rgba(251,191,36,0.20);border:1.5px solid var(--gold);color:var(--gold);padding:5px 11px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap;" id="mind-xp-badge">0 XP</span>
         </div>
-        <div class="stat-box">
-          <strong id="st-macro-f">56g</strong>
-          <span id="lbl-macro-f">Yog‘ (Fats)</span>
+        <div class="m-track" style="height:8px;background:rgba(255,255,255,0.14);">
+          <div class="m-fill" id="mind-xp-bar" style="width:10%;background:linear-gradient(90deg,#8b5cf6,#fbbf24);"></div>
         </div>
-        <div class="stat-box">
-          <strong id="st-macro-c">208g</strong>
-          <span id="lbl-macro-c">Uglevod (Carbs)</span>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#ddd6fe;margin-top:6px;font-weight:700;">
+          <span id="mind-stage-desc">Keyingi bosqichgacha: 100 XP</span>
+          <span id="mind-rank-lbl">Liga o‘rni: #4</span>
+        </div>
+      </div>
+
+      <!-- Progressive Psychological Scenario + Free-text AI Reflection -->
+      <div class="mind-card">
+        <div class="bento-head">
+          <h2 style="color:#ddd6fe;" id="t-mind-task-head">🎯 Asta-sekin O‘suvchi Vazifa</h2>
+          <button type="button" class="btn-ghost" style="border-color:rgba(167,139,250,0.45);color:#ddd6fe;font-size:11px;" onclick="loadNextMindTask()">Keyingisi ↻</button>
+        </div>
+
+        <div id="mind-task-box">
+          <div style="font-size:11px;font-weight:800;color:var(--gold);margin-bottom:5px;" id="mind-task-tag">1-BOSQICH • IMPULS NAZORATI</div>
+          <p style="font-size:13px;line-height:1.52;color:#f8fafc;margin-bottom:8px;" id="mind-task-question"></p>
+          <div id="mind-task-options"></div>
+          <div class="mind-note-pill" id="mind-task-note"></div>
+        </div>
+
+        <!-- Free-text Reflection Analyzed by AI Psixolog (+40 XP) -->
+        <div style="margin-top:13px;padding-top:12px;border-top:1px solid rgba(167,139,250,0.22);">
+          <label style="display:block;font-size:11px;font-weight:700;color:#c4b5fd;margin-bottom:6px;" id="t-mind-ref-lbl">
+            ✍️ O‘z fikringizni yozing — AI Psixolog tafakkuringizni tahlil qiladi (+40 XP):
+          </label>
+          <div style="display:flex;gap:7px;">
+            <input id="mind-user-thought" type="text" placeholder="Bu vaziyatda men qanday yo‘l tutardim..." onkeydown="if(event.key==='Enter') evaluateMindWithAi()" />
+            <button type="button" class="btn-violet" style="width:auto;white-space:nowrap;padding:10px 14px;" id="btn-mind-ai" onclick="evaluateMindWithAi()">AI Tahlil</button>
+          </div>
+          <div class="ai-box" id="mind-ai-feedback" style="margin-top:9px;border-left-color:#8b5cf6;display:none;"></div>
+        </div>
+      </div>
+
+      <!-- 30s Stroop Color-Ink Blitz Duel + Competitive Leaderboard -->
+      <div class="mind-card">
+        <div class="bento-head">
+          <h2 style="color:#fde68a;" id="t-arena-head">🏆 Tafakkur Musobaqasi (Arena)</h2>
+          <button type="button" class="btn-ghost" style="border-color:var(--gold);color:var(--gold);font-size:11px;" onclick="challengeFriendTelegram()">⚔️ Do‘stni chaqirish</button>
+        </div>
+
+        <!-- 30s Stroop Test Mini-Game -->
+        <div style="background:rgba(15,13,30,0.78);border:1.5px solid rgba(251,191,36,0.34);border-radius:16px;padding:12px;margin-bottom:11px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong style="font-size:12.5px;color:var(--gold);">⚡ 30-Soniyalik Diqqat Dueli (Stroop Test)</strong>
+            <span style="font-size:12px;font-weight:900;color:#ffffff;" id="blitz-timer-lbl">30s • 0 ball</span>
+          </div>
+          <p style="font-size:11.5px;color:#cbd5e1;margin-bottom:9px;line-height:1.45;" id="blitz-prompt">
+            So‘zning ma’nosiga emas, <b>YOZUV RANGIGA</b> qarab tugmani bosing!
+          </p>
+          <div id="blitz-stage" style="display:none;text-align:center;padding:6px 0 4px;">
+            <div id="blitz-word" style="font-size:28px;font-weight:900;letter-spacing:1.2px;margin-bottom:12px;text-shadow:0 2px 12px rgba(0,0,0,0.6);">QIZIL</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;">
+              <button type="button" class="btn-ghost" style="background:#ef4444;color:#ffffff;border:none;font-weight:900;padding:11px 4px;" onclick="answerBlitz('red')">QIZIL</button>
+              <button type="button" class="btn-ghost" style="background:#10b981;color:#ffffff;border:none;font-weight:900;padding:11px 4px;" onclick="answerBlitz('green')">YASHIL</button>
+              <button type="button" class="btn-ghost" style="background:#3b82f6;color:#ffffff;border:none;font-weight:900;padding:11px 4px;" onclick="answerBlitz('blue')">KO‘K</button>
+            </div>
+          </div>
+          <button type="button" class="btn-violet" id="btn-start-blitz" onclick="startBlitzDuel()">⚡ Duelni Boshlash (+XP)</button>
+        </div>
+
+        <div style="font-size:11px;font-weight:800;color:#c4b5fd;margin-bottom:4px;">Haftalik Tafakkur Reytingi:</div>
+        <div id="mind-leaderboard"></div>
+
+        <div class="doc-disclaimer" id="t-doc-mind">
+          ⚕️ Eslatma: Psixologik mashqlar shaxsiy rivojlanish uchun mo‘ljallangan. Chuqur ruhiy yoki tibbiy holatlarda mutaxassis shifokor bilan maslahatlashing.
         </div>
       </div>
     </section>
 
-    <!-- AI Personalization & Schedule -->
-    <section class="card" id="sec-plan">
-      <div class="card-head">
-        <h2 id="t-goal-title">AI Shaxsiylashtirish</h2>
-        <span class="badge-red" id="t-sched-badge">Groq AI Coach</span>
-      </div>
-
-      <div class="grid-3" id="gender-grid">
-        <div class="choice-card active" data-gender="male" onclick="selectGender('male', this)"><span>👨</span><b id="lbl-male">Erkak</b></div>
-        <div class="choice-card" data-gender="female" onclick="selectGender('female', this)"><span>👩</span><b id="lbl-female">Ayol</b></div>
-        <div class="choice-card active" data-level="beginner" id="btn-level-toggle" onclick="cycleLevel()"><span>🌱</span><b id="lbl-level">Boshlang‘ich</b></div>
-      </div>
-
-      <div class="grid-3" id="goal-grid">
-        <div class="choice-card active" data-goal="cut" onclick="selectGoal('cut', this)"><span>🔥</span><b id="lbl-cut">Ozish</b></div>
-        <div class="choice-card" data-goal="bulk" onclick="selectGoal('bulk', this)"><span>💪</span><b id="lbl-bulk">Vazn olish</b></div>
-        <div class="choice-card" data-goal="fit" onclick="selectGoal('fit', this)"><span>⚡</span><b id="lbl-fit">Tonus</b></div>
-      </div>
-
-      <div class="grid-3" id="place-grid">
-        <div class="choice-card active" data-place="home" onclick="selectPlace('home', this)"><span>🏠</span><b id="lbl-home">Uyda</b></div>
-        <div class="choice-card" data-place="gym" onclick="selectPlace('gym', this)"><span>🏋️</span><b id="lbl-gym">Zal</b></div>
-        <div class="choice-card" data-place="workout" onclick="selectPlace('workout', this)"><span>🤸</span><b id="lbl-workout">Vorkaut</b></div>
-      </div>
-
-      <div class="input-row" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 8px;">
-        <div class="field">
-          <label id="lbl-age">Yosh</label>
-          <input id="i-age" type="number" value="27" />
+    <!-- ===================================================================
+         TAB 5: KALORIYA (AI CALORIE & MACRO TRACKER)
+         =================================================================== -->
+    <section class="view-page" id="view-food">
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-food-title">✨ AI Taom Tahlilchisi</h2>
+          <span class="tag" id="food-left-tag">Qoldi: 2150 kkal</span>
         </div>
-        <div class="field">
-          <label id="lbl-weight">Vazn (kg)</label>
-          <input id="i-weight" type="number" value="75" />
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input id="ai-meal-input" type="text" placeholder="Masalan: 1 kosa osh, salat va choy..." onkeydown="if(event.key==='Enter') analyzeMealWithAi()" />
+          <button type="button" class="btn-primary" style="width:auto;white-space:nowrap;padding:10px 14px;" id="btn-ai-meal" onclick="analyzeMealWithAi()">✨ Hisobla</button>
         </div>
-        <div class="field">
-          <label id="lbl-height">Bo‘y (sm)</label>
-          <input id="i-height" type="number" value="175" />
+        <div id="ai-suggested-meals"></div>
+        <div class="doc-disclaimer" id="t-doc-food">
+          ⚕️ Eslatma: Ushbu tavsiyalar umumiy ma’lumot xarakteriga ega. Sog‘lig‘ingiz, ovqatlanish va jismoniy yuklamalar borasida eng avvalo malakali shifokorlar bilan maslahatlashing.
         </div>
       </div>
 
-      <div class="input-row" style="grid-template-columns: 1fr auto;">
-        <input id="i-note" type="text" placeholder="Masalan: tizzam og‘riydi, belim og‘riydi, vaqtim 20 daqiqa..." />
-        <button class="btn-amber" id="btn-save-prof" onclick="generateAiPlan()">✨ AI Reja</button>
-      </div>
-
-      <div class="ai-note" id="ai-advice-box">
-        AI Murabbiy: Parametrlaringizni kiriting va "AI Reja" tugmasini bosing — sizga mos jonli AI ratsion va mashq tuziladi.
-      </div>
-    </section>
-
-    <!-- Circular Ring Workout Timer -->
-    <section class="card" id="sec-timer">
-      <div class="card-head">
-        <h2 id="t-timer-title">Mashg‘ulot Taymeri</h2>
-        <span class="badge-red" id="t-timer-mode">30 daqiqa reja</span>
-      </div>
-
-      <div class="ring-wrap">
-        <svg width="176" height="176" viewBox="0 0 176 176">
-          <circle class="ring-bg" cx="88" cy="88" r="76"></circle>
-          <circle class="ring-fg" id="ring-progress" cx="88" cy="88" r="76"></circle>
-        </svg>
-        <div class="ring-center">
-          <strong id="clock-text">30:00</strong>
-          <span id="clock-sub">TAYYOR</span>
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-logged-title">🍽️ Bugungi Iste’mol</h2>
+          <span class="tag" id="food-eaten-tag">0 kkal</span>
         </div>
+        <div id="food-log-container"></div>
       </div>
-
-      <div class="timer-actions">
-        <button class="btn-red" id="btn-timer-toggle" onclick="toggleTimer()">Boshlash</button>
-        <button class="btn-soft" id="btn-timer-reset" onclick="resetClock()">Qayta</button>
-        <button class="btn-soft" onclick="setTimerSec(45)">45s dam</button>
-        <button class="btn-soft" onclick="setTimerSec(90)">90s</button>
-        <button class="btn-soft" id="btn-plan-min" onclick="setTimerSec(calcTargets().mins * 60)">30m</button>
-      </div>
-
-      <div id="workout-list" style="margin-top: 12px;"></div>
     </section>
 
-    <!-- Workout Music & MP3 -->
-    <section class="card" id="sec-music">
-      <div class="card-head">
-        <h2 id="t-music-title">Workout Musiqa & MP3</h2>
-        <button class="btn-soft" id="btn-upload-mp3" onclick="document.getElementById('mp3-input').click()">+ MP3 yuklash</button>
-        <input id="mp3-input" type="file" accept="audio/*" hidden onchange="loadLocalMp3(this)" />
+    <!-- ===================================================================
+         TAB 6: MUSIQA (ONLINE WORKOUT MUSIC VIA ITUNES API)
+         =================================================================== -->
+    <section class="view-page" id="view-music">
+      <div class="bento">
+        <div class="bento-head">
+          <h2 id="t-music-title">🎧 Onlayn Workout Musiqa</h2>
+          <span class="tag">iTunes Live</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input id="music-search-in" type="text" value="workout phonk" placeholder="Artist yoki janr qidiring..." onkeydown="if(event.key==='Enter') searchOnlineTracks()" />
+          <button type="button" class="btn-primary" style="width:auto;padding:10px 14px;" id="btn-music-search" onclick="searchOnlineTracks()">Qidirish</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+          <button type="button" class="btn-ghost" onclick="quickMusicSearch('workout phonk')">🔥 Phonk</button>
+          <button type="button" class="btn-ghost" onclick="quickMusicSearch('gym motivation')">💪 Gym</button>
+          <button type="button" class="btn-ghost" onclick="quickMusicSearch('uzbek remix')">🇺🇿 Uzbek</button>
+          <button type="button" class="btn-ghost" onclick="quickMusicSearch('running cardio')">⚡ Cardio</button>
+        </div>
+        <div id="music-tracks-container"></div>
       </div>
-
-      <div class="input-row" style="grid-template-columns: 1fr auto; margin-bottom: 6px;">
-        <input id="music-query" type="text" value="workout phonk energy" placeholder="Musiqa uslubini qidiring..." />
-        <button class="btn-amber" id="btn-search-music" onclick="searchMusic()">Qidirish</button>
-      </div>
-
-      <div id="track-list"></div>
     </section>
+  </div>
 
-    <!-- Calorie & Nutrition Counter -->
-    <section class="card" id="sec-food">
-      <div class="card-head">
-        <h2 id="t-food-title">AI Kaloriya Hisoblagich</h2>
-        <span class="badge-red" id="food-remain-badge">Qoldi: 1850 kkal</span>
-      </div>
-
-      <div class="preset-row">
-        <button class="preset-chip" onclick="quickAddFood('Tovuq filesi + guruch', 460)">+ Tovuq & guruch (460)</button>
-        <button class="preset-chip" onclick="quickAddFood('3 ta tuxum + suli', 340)">+ Tuxum & suli (340)</button>
-        <button class="preset-chip" onclick="quickAddFood('Banan + tvorog', 250)">+ Banan & tvorog (250)</button>
-      </div>
-
-      <div class="input-row" style="grid-template-columns: 1fr 92px auto;">
-        <input id="food-name" type="text" placeholder="Taom nomi" />
-        <input id="food-kcal" type="number" placeholder="Kkal" />
-        <button class="btn-red" id="btn-add-food" onclick="addFood()">Qo‘shish</button>
-      </div>
-
-      <div id="food-log-list"></div>
-    </section>
-  </main>
-
-  <nav class="dock-wrap">
-    <button class="dock-btn active" onclick="scrollToSec('sec-home', this)"><span>🏠</span><b id="nav-home">Asosiy</b></button>
-    <button class="dock-btn" onclick="scrollToSec('sec-timer', this)"><span>⏱️</span><b id="nav-timer">Taymer</b></button>
-    <button class="dock-btn" onclick="scrollToSec('sec-music', this)"><span>🎧</span><b id="nav-music">Musiqa</b></button>
-    <button class="dock-btn" onclick="scrollToSec('sec-food', this)"><span>🥗</span><b id="nav-food">Kaloriya</b></button>
+  <!-- =====================================================================
+       BOTTOM 6-TAB NAVIGATION DOCK
+       ===================================================================== -->
+  <nav class="nav-dock">
+    <button type="button" class="nav-btn active" onclick="switchTab('view-home', 0)"><span>🏠</span><b id="nav-0">Asosiy</b></button>
+    <button type="button" class="nav-btn" onclick="switchTab('view-ai', 1)"><span>🤖</span><b id="nav-1">AI Reja</b></button>
+    <button type="button" class="nav-btn" onclick="switchTab('view-workout', 2)"><span>🏋️</span><b id="nav-2">Mashq</b></button>
+    <button type="button" class="nav-btn mind-tab" onclick="switchTab('view-mind', 3)"><span>🧠</span><b id="nav-3">Tafakkur</b></button>
+    <button type="button" class="nav-btn" onclick="switchTab('view-food', 4)"><span>🥗</span><b id="nav-4">Kaloriya</b></button>
+    <button type="button" class="nav-btn" onclick="switchTab('view-music', 5)"><span>🎧</span><b id="nav-5">Musiqa</b></button>
   </nav>
 
   <script>
+    /* =========================================================================
+       1. CONFIGURATION, TELEGRAM WEBAPP & SAFE UTILITIES
+       ========================================================================= */
     const AI_SERVER_URL = "https://fitmani-bot-production.up.railway.app/api/ai";
-
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
-      tg.ready();
-      tg.expand();
+      try { tg.ready(); tg.expand(); } catch (e) {}
     }
 
-    const uname = tg && tg.initDataUnsafe && tg.initDataUnsafe.user
-      ? tg.initDataUnsafe.user.first_name
+    const userFirstName = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name
+      ? String(tg.initDataUnsafe.user.first_name)
       : "Do‘stim";
 
-    let st = JSON.parse(localStorage.getItem("fitmani_cola_v2") || "null") || {
-      lang: "uz",
-      gender: "male",
-      level: "beginner",
-      goal: "cut",
-      place: "home",
-      age: 27,
-      weight: 75,
-      height: 175,
-      userNote: "",
-      aiPlanText: "",
-      streak: 1,
-      spotMode: "black",
-      doneEx: [],
-      foodLog: []
-    };
+    function escapeHtml(raw) {
+      return String(raw == null ? "" : raw)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-    const RING_CIRC = 2 * Math.PI * 76;
-    const ringEl = document.getElementById("ring-progress");
-    ringEl.style.strokeDasharray = RING_CIRC;
-    ringEl.style.strokeDashoffset = 0;
+    /** Bulletproof Mobile YouTube Opener:
+     *  Uses Telegram.WebApp.openLink ONLY inside a real Telegram WebApp session (with initData),
+     *  otherwise falls back seamlessly to the native <a href="..." target="_blank"> navigation. */
+    function openYtBulletproof(e, anchorEl) {
+      const url = anchorEl.href;
+      if (tg && typeof tg.openLink === "function" && tg.initData && tg.initData.length > 0) {
+        try {
+          e.preventDefault();
+          tg.openLink(url, { try_instant_view: false });
+          return false;
+        } catch (err) {
+          return true;
+        }
+      }
+      return true;
+    }
 
-    let totalSec = 30 * 60;
-    let left = totalSec;
-    let tid = null;
-    let on = false;
-    let currentTrackIdx = -1;
+    /** iFrame-safe Clipboard Copy using hidden textarea + document.execCommand('copy') */
+    function copyTextSafe(text) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = String(text || "");
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.top = "-9999px";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast(ok ? "🔗 YouTube havolasi nusxalandi!" : "Havolani nusxalab bo‘lmadi");
+      } catch (e) {
+        showToast("Havolani nusxalab bo‘lmadi");
+      }
+    }
 
-    const L = {
+    /* =========================================================================
+       2. MULTILINGUAL DICTIONARY (UZ / RU / EN)
+       ========================================================================= */
+    const I18N = {
       uz: {
-        tagline: "Shaxsiy sog‘lom odat va AI ratsion",
-        spotBlack: "Qora dog‘",
-        spotGreen: "Yashil dog‘",
-        spotBlackMsg: "Qop-qora Dalmatin dog‘lar yoqildi!",
-        spotGreenMsg: "Yam-yashil Dalmatin dog‘lar yoqildi!",
-        hello: (n) => `Salom, ${n || "Do‘stim"}!`,
-        sub: "Bugungi shaxsiy reja, taymer va AI ovqatlanish nazorati",
-        norma: "Kunlik norma",
-        eaten: "Iste’mol kkal",
-        dur: "Mashq vaqti",
-        macroP: "Oqsil (Protein)",
-        macroF: "Yog‘ (Fats)",
-        macroC: "Uglevod (Carbs)",
-        goalTitle: "AI Shaxsiylashtirish",
+        tagline: "Tana, Ratsion & Tafakkur tizimi",
+        themeRed: "Qizil",
+        themeGreen: "Yashil",
+        greeting: (n) => `Salom, ${n}!`,
+        dayUnit: "kun",
+        goalCut: "Ozish",
+        goalBulk: "Vazn olish",
+        goalFit: "Tonus",
+        goalSummary: (g, k) => `Maqsad: ${g} • ${k} kkal/kun`,
+        kcalRem: "QOLDI KKAL",
+        pLbl: "Oqsil (Protein)",
+        fLbl: "Yog‘ (Fats)",
+        cLbl: "Uglevod (Carbs)",
+        mindBadge: "🧠 YANGI • PSIXOLOGIYA VA TAFAKKUR ARENASI",
+        mindBannerTitle: "Aql, Diqqat va Strategik Fikrlash",
+        mindEnter: "Kirish →",
+        waterTitle: "💧 Kunlik suv balansi",
+        cardEx: "Bugungi mashqlar",
+        cardExSub: "Mashqlar & YouTube →",
+        cardAi: "AI Shaxsiy Reja",
+        cardAiVal: "Tayyor ✨",
+        cardAiSub: "Reja tuzish →",
+        coachHead: "🤖 AI Murabbiy tavsiyasi",
+        docDisclaimer: "⚕️ Eslatma: Ushbu tavsiyalar umumiy ma’lumot xarakteriga ega. Sog‘lig‘ingiz, ovqatlanish va jismoniy yuklamalar borasida eng avvalo malakali shifokorlar bilan maslahatlashing.",
+        aiTitle: "🤖 AI Shaxsiy Reja Generator",
         male: "Erkak",
         female: "Ayol",
         cut: "Ozish",
@@ -833,38 +1201,44 @@
         age: "Yosh",
         weight: "Vazn (kg)",
         height: "Bo‘y (sm)",
-        aiBtn: "✨ AI Reja",
-        timerTitle: "Mashg‘ulot Taymeri",
-        musicTitle: "Workout Musiqa & MP3",
-        uploadMp3: "+ MP3 yuklash",
+        note: "Maxsus maqsad yoki cheklov",
+        genBtn: "✨ AI Shaxsiy Reja va Menyuni Tuzish",
+        aiRes: "📋 AI Xulosasi",
+        timerTitle: "⏱️ Interval & Dam Olish Taymeri",
+        exTitle: "🏋️ Bugungi Mashqlar",
+        foodTitle: "✨ AI Taom Tahlilchisi",
+        calcBtn: "✨ Hisobla",
+        loggedTitle: "🍽️ Bugungi Iste’mol",
+        musicTitle: "🎧 Onlayn Workout Musiqa",
         searchBtn: "Qidirish",
-        foodTitle: "AI Kaloriya Hisoblagich",
-        addBtn: "Qo‘shish",
-        start: "Boshlash",
-        pause: "Pauza",
-        reset: "Qayta",
-        ready: "TAYYOR",
-        running: "JARAYONDA",
-        navHome: "Asosiy",
-        navTimer: "Taymer",
-        navMusic: "Musiqa",
-        navFood: "Kaloriya"
+        nav: ["Asosiy", "AI Reja", "Mashq", "Tafakkur", "Kaloriya", "Musiqa"]
       },
       ru: {
-        tagline: "Помощник привычек и AI-рацион",
-        spotBlack: "Чёрные пятна",
-        spotGreen: "Зелёные пятна",
-        spotBlackMsg: "Включены чёрные далматин-пятна!",
-        spotGreenMsg: "Включены зелёные далматин-пятна!",
-        hello: (n) => `Привет, ${n || "Друг"}!`,
-        sub: "Персональный план, таймер и контроль AI-рациона",
-        norma: "Дневная норма",
-        eaten: "Съедено ккал",
-        dur: "Время трен.",
-        macroP: "Белки (Protein)",
-        macroF: "Жиры (Fats)",
-        macroC: "Углеводы (Carbs)",
-        goalTitle: "AI Персонализация",
+        tagline: "Тело, Рацион и Мышление",
+        themeRed: "Красный",
+        themeGreen: "Зелёный",
+        greeting: (n) => `Привет, ${n === "Do‘stim" ? "Друг" : n}!`,
+        dayUnit: "дн.",
+        goalCut: "Похудение",
+        goalBulk: "Набор массы",
+        goalFit: "Тонус",
+        goalSummary: (g, k) => `Цель: ${g} • ${k} ккал/день`,
+        kcalRem: "ОСТАЛОСЬ ККАЛ",
+        pLbl: "Белки (Protein)",
+        fLbl: "Жиры (Fats)",
+        cLbl: "Углеводы (Carbs)",
+        mindBadge: "🧠 НОВОЕ • АРЕНА ПСИХОЛОГИИ И МЫШЛЕНИЯ",
+        mindBannerTitle: "Разум, Фокус и Стратегия",
+        mindEnter: "Войти →",
+        waterTitle: "💧 Водный баланс",
+        cardEx: "Тренировки дня",
+        cardExSub: "Упражнения & YouTube →",
+        cardAi: "AI Личный План",
+        cardAiVal: "Готов ✨",
+        cardAiSub: "Создать план →",
+        coachHead: "🤖 Совет AI-тренера",
+        docDisclaimer: "⚕️ Примечание: Рекомендации носят общий информационный характер. По вопросам здоровья, питания и нагрузок сначала проконсультируйтесь с врачом.",
+        aiTitle: "🤖 Генератор AI-плана",
         male: "Мужчина",
         female: "Женщина",
         cut: "Похудение",
@@ -876,38 +1250,44 @@
         age: "Возраст",
         weight: "Вес (кг)",
         height: "Рост (см)",
-        aiBtn: "✨ AI План",
-        timerTitle: "Таймер тренировки",
-        musicTitle: "Музыка и MP3 для тренировки",
-        uploadMp3: "+ Загрузить MP3",
+        note: "Особая цель или ограничения",
+        genBtn: "✨ Создать AI План и Меню",
+        aiRes: "📋 Вывод AI-тренера",
+        timerTitle: "⏱️ Интервальный таймер",
+        exTitle: "🏋️ Тренировка на сегодня",
+        foodTitle: "✨ AI-анализатор блюд",
+        calcBtn: "✨ Расчёт",
+        loggedTitle: "🍽️ Съедено сегодня",
+        musicTitle: "🎧 Онлайн Workout Музыка",
         searchBtn: "Поиск",
-        foodTitle: "AI Счётчик калорий",
-        addBtn: "Добавить",
-        start: "Старт",
-        pause: "Пауза",
-        reset: "Сброс",
-        ready: "ГОТОВ",
-        running: "ИДЁТ",
-        navHome: "Главная",
-        navTimer: "Таймер",
-        navMusic: "Музыка",
-        navFood: "Калории"
+        nav: ["Главная", "AI План", "Тренинг", "Разум", "Калории", "Музыка"]
       },
       en: {
-        tagline: "Personal habit & AI nutrition guide",
-        spotBlack: "Black Spots",
-        spotGreen: "Green Spots",
-        spotBlackMsg: "Pitch-black Dalmatian spots enabled!",
-        spotGreenMsg: "Vibrant green Dalmatian spots enabled!",
-        hello: (n) => `Hi, ${n || "Friend"}!`,
-        sub: "Daily custom workout plan, timer & AI calorie tracker",
-        norma: "Daily Target",
-        eaten: "Eaten kcal",
-        dur: "Duration",
-        macroP: "Protein",
-        macroF: "Fats",
-        macroC: "Carbs",
-        goalTitle: "AI Personalization",
+        tagline: "Body, Nutrition & Mind OS",
+        themeRed: "Red",
+        themeGreen: "Green",
+        greeting: (n) => `Hi, ${n === "Do‘stim" ? "Friend" : n}!`,
+        dayUnit: "days",
+        goalCut: "Fat Loss",
+        goalBulk: "Muscle Gain",
+        goalFit: "Tone & Fit",
+        goalSummary: (g, k) => `Goal: ${g} • ${k} kcal/day`,
+        kcalRem: "KCAL LEFT",
+        pLbl: "Protein",
+        fLbl: "Fats",
+        cLbl: "Carbs",
+        mindBadge: "🧠 NEW • PSYCHOLOGY & MINDSET ARENA",
+        mindBannerTitle: "Mind, Focus & Strategic Thinking",
+        mindEnter: "Enter →",
+        waterTitle: "💧 Daily Water Balance",
+        cardEx: "Today's Workouts",
+        cardExSub: "Workouts & YouTube →",
+        cardAi: "AI Personal Plan",
+        cardAiVal: "Ready ✨",
+        cardAiSub: "Build plan →",
+        coachHead: "🤖 AI Coach Advice",
+        docDisclaimer: "⚕️ Note: Recommendations are for general informational purposes. Always consult qualified doctors first regarding health, diet, and physical training.",
+        aiTitle: "🤖 AI Personal Plan Generator",
         male: "Male",
         female: "Female",
         cut: "Fat Loss",
@@ -919,430 +1299,812 @@
         age: "Age",
         weight: "Weight (kg)",
         height: "Height (cm)",
-        aiBtn: "✨ AI Plan",
-        timerTitle: "Workout Timer",
-        musicTitle: "Workout Music & MP3",
-        uploadMp3: "+ Upload MP3",
+        note: "Special goal or injury notes",
+        genBtn: "✨ Generate AI Plan & Menu",
+        aiRes: "📋 AI Summary",
+        timerTitle: "⏱️ Interval & Rest Timer",
+        exTitle: "🏋️ Today's Exercises",
+        foodTitle: "✨ AI Meal Analyzer",
+        calcBtn: "✨ Calculate",
+        loggedTitle: "🍽️ Today's Intake",
+        musicTitle: "🎧 Online Workout Music",
         searchBtn: "Search",
-        foodTitle: "AI Calorie Tracker",
-        addBtn: "Add",
-        start: "Start",
-        pause: "Pause",
-        reset: "Reset",
-        ready: "READY",
-        running: "RUNNING",
-        navHome: "Home",
-        navTimer: "Timer",
-        navMusic: "Music",
-        navFood: "Calories"
+        nav: ["Home", "AI Plan", "Workout", "Mind", "Calories", "Music"]
       }
     };
 
-    const WORKOUTS = {
-      home: [
-        { name: "Razminka & Sakrash (Jumping Jacks)", meta: "3 daqiqa • Yurak urishini tezlashtirish" },
-        { name: "Otjimaniya (Push-ups)", meta: "4 x 15 marta • Ko‘krak va yelka" },
-        { name: "Prisedaniya (Squats)", meta: "4 x 20 marta • Oyoq va bel kuchi" },
-        { name: "Planka (Core Hold)", meta: "3 x 45 soniya • Qorin mushaklari" }
-      ],
-      gym: [
-        { name: "Yugurish yo‘lakchasi (Incline Walk)", meta: "6 daqiqa • Qizish bosqichi" },
-        { name: "Jimm lyojya (Bench Press)", meta: "4 x 12 marta • Yuqori tana" },
-        { name: "Tyaga verxnego bloka", meta: "4 x 12 marta • Orqa kengligi" },
-        { name: "Oyoq jimi (Leg Press)", meta: "3 x 15 marta • Oyoq kuchi" }
-      ],
-      workout: [
-        { name: "Turnikda tortilish (Pull-ups)", meta: "4 x 8 marta • Orqa va qo‘l" },
-        { name: "Brusyada otjimaniya (Dips)", meta: "4 x 12 marta • Triceps va ko‘krak" },
-        { name: "Turnikda oyoq ko‘tarish", meta: "3 x 12 marta • Press" },
-        { name: "Yengil yugurish + cho‘zilish", meta: "5 daqiqa • Tiklanish" }
-      ]
-    };
-
-    const TRACKS = [
-      { title: "Dalmatin Phonk Power", artist: "FITMANI Studio • 132 BPM", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-      { title: "Red Sprint Energy", artist: "Cardio Mix • 140 BPM", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-      { title: "Iron Focus Bass", artist: "Gym Mode • 128 BPM", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+    /* =========================================================================
+       3. DATASETS (EXERCISES, MEALS & PROGRESSIVE MINDSET TASKS)
+       ========================================================================= */
+    const DEFAULT_EXERCISES = [
+      { name: "Razminka & Sakrash (Jumping Jacks)", ytQuery: "jumping jacks exercise proper form", sets: "3 daqiqa", rest: "30s", kcal: 35, done: false, tip: "Oyoqlarni yelkadan kengroq ochib sakrang, tizzalarni yumshoq tuting va burundan chuqur nafas oling." },
+      { name: "Otjimaniya (Push-ups)", ytQuery: "push ups proper form tutorial", sets: "4 x 15 marta", rest: "60s", kcal: 55, done: false, tip: "Tana va belni bitta to‘g‘ri chiziqda tuting; pastga tushganda nafas oling, yuqoriga itarilganda nafas chiqaring." },
+      { name: "Prisedaniya (Squats)", ytQuery: "bodyweight squat proper form", sets: "4 x 20 marta", rest: "60s", kcal: 70, done: false, tip: "Tovonlarni yerdan uzmang, tizzalar oyoq uchidan oldinga chiqib ketmasin va belni tik saqlang." },
+      { name: "Planka (Core Hold)", ytQuery: "plank exercise proper form", sets: "3 x 45 soniya", rest: "45s", kcal: 40, done: false, tip: "Tirsaklarni aniq yelka ostiga qo‘ying, qorin mushaklarini tarang tuting va belni pastga osiltirmang." }
     ];
 
+    const DEFAULT_SUGGESTIONS = [
+      { name: "Nonushta: 3 ta qaynatilgan tuxum + suli bo‘tqasi", kcal: 380, p: 24, f: 14, c: 38 },
+      { name: "Tushlik: 200g tovuq filesi + guruch + sabzavotli salat", kcal: 540, p: 46, f: 10, c: 62 },
+      { name: "Kechki ovqat: 180g tvorog + 1 ta banan + bodom", kcal: 310, p: 26, f: 9, c: 31 }
+    ];
+
+    const MIND_TASKS = [
+      {
+        stage: "1-bosqich • Impuls Nazorati",
+        q: "Muhim ish ustida o‘tirganingizda telefoningizga ketma-ket xabar keldi. Miyaning dopamin tuzog‘iga tushmaslik uchun eng to‘g‘ri neyro-harakat qaysi?",
+        options: [
+          { text: "Darhol xabarlarni ochib, 2 daqiqa ijtimoiy tarmoq ko‘rish", ok: false, note: "Kontekst almashishi diqqatni tiklash uchun 15–20 daqiqa yo‘qotishga olib keladi." },
+          { text: "25 daqiqalik taymer tugaguncha telefonni chetga qo‘yib, fikrni qog‘ozga yozib qo‘yish", ok: true, note: "To‘g‘ri! Impulsni kechiktirish prefrontal korteksni kuchaytiradi (+35 XP)." },
+          { text: "Ishni to‘xtatib, rejasiz tanaffus qilish", ok: false, note: "Rejasiz tanaffus intizomni zaiflashtiradi." }
+        ]
+      },
+      {
+        stage: "2-bosqich • Kognitiv Qayta Ramkalash",
+        q: "Rejalashtirgan ishingiz birinchi urinishda o‘xshamadi. Kuchli psixologik yondashuv qanday bo‘ladi?",
+        options: [
+          { text: "«Mendan baribir chiqmaydi» deb o‘zni ayblash", ok: false, note: "Umumlashtirish (overgeneralization) — kognitiv xato." },
+          { text: "«Bu natija emas, ma’lumot (feedback): aynan qaysi qadamni o‘zgartirsam ishlaydi?»", ok: true, note: "Ajoyib! Muammoni shaxsiyatdan ajratib, tahlilga o‘tkazdingiz (+35 XP)." },
+          { text: "Boshqalarni aybdor deb bilish", ok: false, note: "Tashqi lokus nazorati o‘sishni to‘xtatadi." }
+        ]
+      },
+      {
+        stage: "3-bosqich • Strategik Tafakkur (2-tartibli oqibat)",
+        q: "Bugun charchoq sababli mashg‘ulot va rejangizni o‘tkazib yuborish qarori oldida turibsiz. 2-tartibli oqibatni qanday baholaysiz?",
+        options: [
+          { text: "Bugun dam olaman, ertaga ikki hissa ishlayman", ok: false, note: "Odat zanjiri uzilsa, ertasi kuni qarshilik 2 baravar kuchayadi." },
+          { text: "To‘liq yuklama bo‘lmasa ham, 10 daqiqalik mini-versiyasini bajarib zanjirni saqlab qolaman", ok: true, note: "Zo‘r strategiya! Odatning uzluksizligi intensivlikdan muhimroq (+35 XP)." },
+          { text: "Hafta oxirigacha hamma rejani bekor qilish", ok: false, note: "«Hammasi yoki hech narsa» maksimalizmi." }
+        ]
+      },
+      {
+        stage: "4-bosqich • Emotsional Intellekt",
+        q: "Suhbatdoshingiz bahsda ovozini ko‘tarib, hissiy bosim o‘tkaza boshladi. Psixologik ustunlikni saqlash usuli:",
+        options: [
+          { text: "Undan ham balandroq ovozda javob qaytarish", ok: false, note: "Hissiy reaktivlik boshqaruvni raqib qo‘liga topshiradi." },
+          { text: "3 soniya sukut saqlab, past va xotirjam ohangda asosiy faktga qaytish", ok: true, note: "Mukammal! Xotirjam temp suhbatdoshning emotsional to‘lqinini sindiradi (+35 XP)." },
+          { text: "Suhbatni umuman tushuntirishsiz tark etish", ok: false, note: "Yopiq pozitsiya masalani hal qilmaydi." }
+        ]
+      },
+      {
+        stage: "5-bosqich • Neyro-Plastiklik Ustasi",
+        q: "Yangi murakkab ko‘nikmani o‘rganishda miyada neyron aloqalarni eng tez mustahkamlovchi usul qaysi?",
+        options: [
+          { text: "Faqat nazariy kitob va videolarni ko‘rib chiqish", ok: false, note: "Passiv iste’mol miyada mustahkam neyron yo‘l yaratmaydi." },
+          { text: "Xato qilishdan qo‘rqmasdan amalda sinab ko‘rish va 24 soat ichida qayta takrorlash", ok: true, note: "Usta darajasi! Faol amaliyot va konsolidatsiya neyro-plastiklikni ishga tushiradi (+35 XP)." },
+          { text: "Hammasi mukammal bo‘ladigan kunni kutish", ok: false, note: "Perfeksionizm harakatni falajlaydi." }
+        ]
+      }
+    ];
+
+    /* =========================================================================
+       4. PERSISTENT STATE
+       ========================================================================= */
+    let st = null;
+    try { st = JSON.parse(localStorage.getItem("fitmani_os_v5") || "null"); } catch (e) { st = null; }
+    if (!st) {
+      st = {
+        lang: "uz",
+        theme: "red",
+        gender: "male",
+        level: "beginner",
+        goal: "cut",
+        place: "home",
+        age: 33,
+        weight: 75,
+        height: 175,
+        note: "",
+        streak: 1,
+        waterMl: 0,
+        aiAdvice: "",
+        mindXp: 0,
+        mindTaskIdx: 0,
+        exercises: DEFAULT_EXERCISES,
+        suggestedMeals: DEFAULT_SUGGESTIONS,
+        foodLog: []
+      };
+    }
+
     function saveState() {
-      localStorage.setItem("fitmani_cola_v2", JSON.stringify(st));
-    }
-
-    function formatAiText(raw) {
-      const escaped = String(raw || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-      return escaped
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\n/g, "<br>");
-    }
-
-    function applySpotMode() {
-      const isGreen = st.spotMode === "green";
-      document.body.classList.toggle("spot-green", isGreen);
-      const d = L[st.lang] || L.uz;
-      const lbl = document.getElementById("spot-toggle-label");
-      if (lbl) lbl.textContent = isGreen ? d.spotGreen : d.spotBlack;
-    }
-
-    function triggerSpotPulse() {
-      const bg = document.querySelector(".dalmatian-bg");
-      if (!bg) return;
-      bg.classList.remove("pulse-spots");
-      void bg.offsetWidth;
-      bg.classList.add("pulse-spots");
-    }
-
-    function toggleSpotColor() {
-      st.spotMode = st.spotMode === "green" ? "black" : "green";
-      saveState();
-      applySpotMode();
-      triggerSpotPulse();
-      haptic("success");
-      const d = L[st.lang] || L.uz;
-      showToast(st.spotMode === "green" ? d.spotGreenMsg : d.spotBlackMsg);
-    }
-
-    function haptic(type = "light") {
-      if (!tg || !tg.HapticFeedback) return;
-      if (type === "success") tg.HapticFeedback.notificationOccurred("success");
-      else tg.HapticFeedback.impactOccurred(type);
+      try { localStorage.setItem("fitmani_os_v5", JSON.stringify(st)); } catch (e) {}
     }
 
     function showToast(msg) {
       const el = document.getElementById("toast");
       el.textContent = msg;
       el.classList.add("show");
-      clearTimeout(el._t);
-      el._t = setTimeout(() => el.classList.remove("show"), 2400);
+      clearTimeout(el._tid);
+      el._tid = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    /* =========================================================================
+       5. NAVIGATION & LIVE TAFAKKUR SESSION CLOCK
+       ========================================================================= */
+    let currentTabId = "view-home";
+    let mindSecondsSpent = 0;
+
+    setInterval(() => {
+      if (currentTabId === "view-mind" && !document.hidden) {
+        mindSecondsSpent++;
+        const mm = String(Math.floor(mindSecondsSpent / 60)).padStart(2, "0");
+        const ss = String(mindSecondsSpent % 60).padStart(2, "0");
+        document.getElementById("mind-session-clock").textContent = `Bo‘limdagi vaqtingiz: ${mm}:${ss}`;
+        if (mindSecondsSpent === 900) {
+          showToast("⏳ 15 daqiqa bo‘ldi — ko‘zingizga dam bering va vaqtingizni nazorat qiling!");
+        }
+      }
+    }, 1000);
+
+    function switchTab(viewId, idx) {
+      currentTabId = viewId;
+      document.querySelectorAll(".view-page").forEach((v) => v.classList.remove("active"));
+      const target = document.getElementById(viewId);
+      if (target) target.classList.add("active");
+      document.querySelectorAll(".nav-btn").forEach((b, i) => b.classList.toggle("active", i === idx));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleSpotTheme() {
+      st.theme = st.theme === "green" ? "red" : "green";
+      saveState();
+      applyTheme();
+    }
+
+    function applyTheme() {
+      const d = I18N[st.lang] || I18N.uz;
+      const isGreen = st.theme === "green";
+      document.body.classList.toggle("spot-green", isGreen);
+      document.getElementById("t-theme-lbl").textContent = isGreen ? d.themeGreen : d.themeRed;
     }
 
     function setLang(lang, btn) {
       st.lang = lang;
       saveState();
-      document.querySelectorAll(".lang-switch button").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".lang-box button").forEach((b) => b.classList.remove("active"));
       if (btn) btn.classList.add("active");
-      render();
+      renderAll();
+      showToast(`Til: ${lang.toUpperCase()}`);
     }
 
     function bumpStreak() {
       st.streak = (st.streak || 1) + 1;
       saveState();
-      render();
-      haptic("success");
+      renderAll();
       showToast(`🔥 Streak: ${st.streak} kun!`);
     }
 
-    function selectGoal(goal, el) {
-      st.goal = goal;
+    function addWater(ml) {
+      st.waterMl = Math.min(4000, (st.waterMl || 0) + ml);
       saveState();
-      document.querySelectorAll("#goal-grid .choice-card").forEach((c) => c.classList.remove("active"));
-      el.classList.add("active");
-      render();
+      renderAll();
+      showToast(`💧 +${ml} ml`);
     }
 
-    function selectGender(gender, el) {
-      st.gender = gender;
+    function resetWater() {
+      st.waterMl = 0;
       saveState();
-      document.querySelectorAll("#gender-grid [data-gender]").forEach((c) => c.classList.remove("active"));
+      renderAll();
+    }
+
+    function setChoice(key, val, el) {
+      st[key] = val;
+      saveState();
+      el.parentElement.querySelectorAll(".chip-card").forEach((c) => c.classList.remove("active"));
       el.classList.add("active");
-      render();
+      renderAll();
     }
 
     function cycleLevel() {
-      const order = ["beginner", "intermediate", "pro"];
-      const next = order[(order.indexOf(st.level || "beginner") + 1) % order.length];
-      st.level = next;
+      const arr = ["beginner", "intermediate", "pro"];
+      st.level = arr[(arr.indexOf(st.level) + 1) % arr.length];
       saveState();
-      render();
-    }
-
-    function selectPlace(place, el) {
-      st.place = place;
-      st.doneEx = [];
-      saveState();
-      document.querySelectorAll("#place-grid .choice-card").forEach((c) => c.classList.remove("active"));
-      el.classList.add("active");
-      const { mins } = calcTargets();
-      setTimerSec(mins * 60);
-      render();
+      renderAll();
     }
 
     function calcTargets() {
-      const genderOffset = st.gender === "female" ? -161 : 5;
-      const bmr = 10 * st.weight + 6.25 * (st.height || 175) - 5 * st.age + genderOffset;
+      const gOff = st.gender === "female" ? -161 : 5;
+      const bmr = 10 * st.weight + 6.25 * st.height - 5 * st.age + gOff;
       const mult = st.level === "pro" ? 1.55 : st.level === "intermediate" ? 1.42 : 1.3;
       const tdee = Math.round(bmr * mult);
-
-      const kcal = st.goal === "cut"
-        ? Math.max(1300, tdee - 400)
-        : st.goal === "bulk"
-          ? tdee + 350
-          : tdee;
-
-      const protein = Math.round(st.weight * (st.goal === "bulk" ? 2.0 : 1.7));
-      const fats = Math.round((kcal * 0.27) / 9);
-      const carbs = Math.max(50, Math.round((kcal - protein * 4 - fats * 9) / 4));
-
-      let mins = st.place === "gym" ? 45 : st.place === "workout" ? 38 : 30;
-      const noteLow = (st.userNote || "").toLowerCase();
-      if (noteLow.includes("20") || noteLow.includes("vaqt")) mins = 20;
-      if (noteLow.includes("15")) mins = 15;
-
-      return { kcal, mins, protein, fats, carbs };
+      const kcal = st.goal === "cut" ? Math.max(1350, tdee - 400) : st.goal === "bulk" ? tdee + 400 : tdee;
+      const p = Math.round(st.weight * (st.goal === "bulk" ? 2.1 : 1.7));
+      const f = Math.round((kcal * 0.26) / 9);
+      const c = Math.max(60, Math.round((kcal - p * 4 - f * 9) / 4));
+      const mins = st.place === "gym" ? 45 : st.place === "workout" ? 35 : 30;
+      return { kcal, p, f, c, mins };
     }
 
-    async function generateAiPlan() {
-      st.age = Math.max(12, Math.min(90, parseInt(document.getElementById("i-age").value, 10) || 27));
-      st.weight = Math.max(35, Math.min(220, parseInt(document.getElementById("i-weight").value, 10) || 75));
-      st.height = Math.max(120, Math.min(230, parseInt(document.getElementById("i-height").value, 10) || 175));
-      st.userNote = (document.getElementById("i-note").value || "").trim();
-      st.doneEx = [];
-      saveState();
-
-      const { kcal, mins, protein, fats, carbs } = calcTargets();
-      setTimerSec(mins * 60);
-      render();
-
-      const btn = document.getElementById("btn-save-prof");
-      const adviceBox = document.getElementById("ai-advice-box");
-      const d = L[st.lang] || L.uz;
-
-      const langName = st.lang === "ru" ? "rus tilida" : st.lang === "en" ? "ingliz tilida" : "o'zbek tilida";
-      const genderLabel = st.gender === "female" ? d.female : d.male;
-      const goalLabel = st.goal === "bulk" ? d.bulk : st.goal === "fit" ? d.fit : d.cut;
-      const placeLabel = st.place === "gym" ? d.gym : st.place === "workout" ? d.workout : d.home;
-      const levelLabel = st.level === "pro" ? "Pro" : st.level === "intermediate" ? "O'rta" : "Boshlang'ich";
-
-      const prompt =
-        `Foydalanuvchi ma'lumotlari: Jinsi: ${genderLabel}, Yoshi: ${st.age}, Vazni: ${st.weight} kg, Bo'yi: ${st.height} sm, ` +
-        `Darajasi: ${levelLabel}, Maqsadi: ${goalLabel}, Mashq joyi: ${placeLabel}, Mashq vaqti: ${mins} daqiqa. ` +
-        `Kunlik norma: ${kcal} kkal (Oqsil: ${protein}g, Yog': ${fats}g, Uglevod: ${carbs}g). ` +
-        (st.userNote ? `Maxsus izoh/cheklov: "${st.userNote}". ` : "") +
-        `Javobni faqat ${langName} yoz. Unga: 1) Bugungi 3 mahal aniq ovqatlanish menyusi (gramm va taxminiy kaloriyasi bilan), ` +
-        `2) ${mins} daqiqalik ${placeLabel} mashg'ulot ketma-ketligi, 3) Qisqa murabbiy tavsiyasini lo'nda va tushunarli qilib ber.`;
-
-      btn.disabled = true;
-      btn.textContent = "⏳ AI...";
-      adviceBox.innerHTML = "⏳ <strong>AI Murabbiy</strong> siz uchun shaxsiy reja va ratsion tuzmoqda...";
-
+    /* =========================================================================
+       6. BACKEND API & GRACEFUL OFFLINE/PREVIEW FALLBACKS
+       ========================================================================= */
+    async function callGroqBackend(prompt) {
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 14000);
       try {
         const resp = await fetch(AI_SERVER_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt })
+          body: JSON.stringify({ prompt }),
+          signal: controller.signal
         });
+        clearTimeout(tid);
         const data = await resp.json();
-        if (!resp.ok || !data.reply) {
-          throw new Error(data.error || "Server javob bermadi");
-        }
-        st.aiPlanText = data.reply;
-        saveState();
-        adviceBox.innerHTML = formatAiText(st.aiPlanText);
-        haptic("success");
-        showToast("✨ AI shaxsiy reja tayyor!");
+        if (!resp.ok || !data.reply) throw new Error(data.error || "Server xatosi");
+        return data.reply;
       } catch (err) {
-        const noteExtra = st.userNote ? ` Sizning izohingiz («${st.userNote}») hisobga olindi.` : "";
-        const fallback = `AI Murabbiy (${genderLabel}, ${st.age} yosh, ${st.height} sm, ${st.weight} kg): Kunlik ${kcal} kkal (${protein}g oqsil, ${fats}g yog‘, ${carbs}g uglevod) va ${mins} daqiqalik reja.${noteExtra}\n\n⚠️ Serverga ulanishda xatolik: ${err.message}`;
-        adviceBox.innerHTML = formatAiText(fallback);
-        showToast("Serverga ulanib bo'lmadi");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = d.aiBtn;
+        clearTimeout(tid);
+        throw err;
       }
     }
 
-    function paintRing() {
-      const m = String(Math.floor(left / 60)).padStart(2, "0");
-      const s = String(left % 60).padStart(2, "0");
-      document.getElementById("clock-text").textContent = `${m}:${s}`;
-      const ratio = totalSec > 0 ? left / totalSec : 0;
-      ringEl.style.strokeDashoffset = RING_CIRC * (1 - ratio);
+    function extractJson(text) {
+      const match = String(text || "").match(/\{[\s\S]*\}/);
+      if (!match) return null;
+      try { return JSON.parse(match[0]); } catch (e) { return null; }
     }
 
-    function setTimerSec(sec) {
-      totalSec = sec;
-      resetClock();
+    function buildLocalFallbackPlan() {
+      const { kcal, p, f, c, mins } = calcTargets();
+      const noteLow = (st.note || "").toLowerCase();
+      const hasKnee = noteLow.includes("tizza") || noteLow.includes("oyoq");
+      const setsPrefix = st.level === "pro" ? "5 x" : st.level === "intermediate" ? "4 x" : "3 x";
+      const advice =
+        `<strong>${st.age} yosh • ${st.weight} kg • ${st.height} sm</strong> uchun kunlik norma: <strong>${kcal} kkal</strong> (${p}g oqsil, ${f}g yog‘, ${c}g uglevod). ` +
+        `Mashg‘ulot davomiyligi: <strong>${mins} daqiqa</strong>.${st.note ? ` Maxsus eslatma («${escapeHtml(st.note)}») hisobga olindi.` : ""}`;
+
+      const exercises = st.place === "gym"
+        ? [
+            { name: hasKnee ? "Velotrenajyor (Yumshoq qizish)" : "Yugurish yo‘lakchasi (Incline Walk)", ytQuery: "incline treadmill walk workout", sets: "6 daqiqa", rest: "45s", kcal: 55, done: false, tip: "Nafas maromini bir tekisda saqlang." },
+            { name: "Jimm lyojya (Bench Press)", ytQuery: "barbell bench press proper form", sets: `${setsPrefix} 12 marta`, rest: "75s", kcal: 80, done: false, tip: "Kuraklarni skameykaga bosing va shtangani ko‘krak o‘rtasiga tushiring." },
+            { name: "Yuqori blokni tortish (Lat Pulldown)", ytQuery: "lat pulldown proper form", sets: `${setsPrefix} 12 marta`, rest: "60s", kcal: 70, done: false, tip: "Tirsaklarni pastga tortib, orqa mushaklarini his qiling." },
+            { name: "Oyoq jimi (Leg Press)", ytQuery: "leg press machine proper form", sets: `${setsPrefix} 15 marta`, rest: "60s", kcal: 85, done: false, tip: "Tizzalarni yuqorida to‘liq qulflamang." }
+          ]
+        : st.place === "workout"
+        ? [
+            { name: "Turnikda tortilish (Pull-ups)", ytQuery: "pull ups proper form tutorial", sets: `${setsPrefix} 8 marta`, rest: "75s", kcal: 65, done: false, tip: "Tana tebranmasin, iyakni turnikdan yuqoriga olib chiqing." },
+            { name: "Brusyada otjimaniya (Dips)", ytQuery: "parallel bar dips proper form", sets: `${setsPrefix} 12 marta`, rest: "60s", kcal: 70, done: false, tip: "Tirsaklarni 90 darajagacha buking." },
+            { name: "Prisedaniya (Squats)", ytQuery: "bodyweight squat proper form", sets: `${setsPrefix} 20 marta`, rest: "60s", kcal: 70, done: false, tip: "Tovonni yerdan uzmang va belni tik tuting." },
+            { name: "Planka (Core Hold)", ytQuery: "plank exercise proper form", sets: "3 x 50 soniya", rest: "45s", kcal: 45, done: false, tip: "Qorin mushaklarini tarang tutib tekis nafas oling." }
+          ]
+        : [
+            { name: hasKnee ? "Qo‘l va yelka razminkasi" : "Razminka & Sakrash (Jumping Jacks)", ytQuery: "jumping jacks exercise proper form", sets: "3 daqiqa", rest: "30s", kcal: 40, done: false, tip: "Bo‘g‘imlarni yumshoq harakat bilan qizdiring." },
+            { name: "Otjimaniya (Push-ups)", ytQuery: "push ups proper form tutorial", sets: `${setsPrefix} 15 marta`, rest: "60s", kcal: 60, done: false, tip: "Tana to‘g‘ri chiziqda tursin." },
+            { name: hasKnee ? "Tos ko‘tarish (Glute Bridge)" : "Prisedaniya (Squats)", ytQuery: hasKnee ? "glute bridge proper form" : "bodyweight squat proper form", sets: `${setsPrefix} 18 marta`, rest: "60s", kcal: 75, done: false, tip: "Harakatni nazorat bilan bajaring." },
+            { name: "Planka (Core Hold)", ytQuery: "plank exercise proper form", sets: "3 x 50 soniya", rest: "45s", kcal: 45, done: false, tip: "Belni pastga osiltirmang." }
+          ];
+
+      const bKcal = Math.round(kcal * 0.28);
+      const lKcal = Math.round(kcal * 0.42);
+      const dKcal = Math.max(250, kcal - bKcal - lKcal);
+      const meals = [
+        { name: "Nonushta: 3 ta tuxum + suli bo‘tqasi + ko‘kat", kcal: bKcal, p: Math.round(p * 0.30), f: Math.round(f * 0.32), c: Math.round(c * 0.28) },
+        { name: "Tushlik: 200g tovuq filesi + guruch/grechka + salat", kcal: lKcal, p: Math.round(p * 0.43), f: Math.round(f * 0.36), c: Math.round(c * 0.45) },
+        { name: "Kechki ovqat: 180g tvorog + kefir + sabzavot", kcal: dKcal, p: Math.round(p * 0.27), f: Math.round(f * 0.32), c: Math.round(c * 0.27) }
+      ];
+      return { advice, exercises, meals };
     }
 
-    function resetClock() {
-      clearInterval(tid);
-      on = false;
-      left = totalSec;
-      const d = L[st.lang] || L.uz;
-      document.getElementById("btn-timer-toggle").textContent = d.start;
-      document.getElementById("clock-sub").textContent = d.ready;
-      paintRing();
+    async function generateFullAiPlan() {
+      st.age = parseInt(document.getElementById("in-age").value, 10) || 33;
+      st.weight = parseInt(document.getElementById("in-weight").value, 10) || 75;
+      st.height = parseInt(document.getElementById("in-height").value, 10) || 175;
+      st.note = (document.getElementById("in-note").value || "").trim();
+      saveState();
+
+      const { kcal, p, f, c, mins } = calcTargets();
+      const btn = document.getElementById("btn-gen-ai");
+      const outBox = document.getElementById("ai-full-advice");
+      const goalStr = st.goal === "bulk" ? "Vazn va mushak olish" : st.goal === "fit" ? "Tonus" : "Ozish";
+      const placeStr = st.place === "gym" ? "Sport zal" : st.place === "workout" ? "Turnik/Brusya vorkaut" : "Uy sharoiti";
+
+      const prompt =
+        `Sen FITMANI AI murabbiysan. Foydalanuvchi: ${st.gender === "female" ? "Ayol" : "Erkak"}, ${st.age} yosh, ${st.weight} kg, ${st.height} sm. ` +
+        `Maqsad: ${goalStr}. Joy: ${placeStr}. Kunlik norma: ${kcal} kkal (Oqsil ${p}g, Yog' ${f}g, Uglevod ${c}g). ` +
+        (st.note ? `Maxsus izoh: "${st.note}". ` : "") +
+        `FAQAT toza JSON qaytar:\n` +
+        `{"advice": "Batafsil tavsiya", "exercises": [{"name": "Mashq nomi", "ytQuery": "english youtube search query", "sets": "4 x 12", "rest": "60s", "kcal": 60}], "meals": [{"name": "Nonushta: ...", "kcal": 450, "p": 30, "f": 14, "c": 48}]}`;
+
+      btn.disabled = true;
+      btn.textContent = "⏳ AI reja tuzmoqda...";
+      outBox.innerHTML = "⏳ <b>AI Murabbiy</b> shaxsiy rejangizni tayyorlamoqda...";
+
+      try {
+        const reply = await callGroqBackend(prompt);
+        const parsed = extractJson(reply);
+        if (parsed && Array.isArray(parsed.exercises) && parsed.exercises.length) {
+          st.aiAdvice = escapeHtml(parsed.advice || "Shaxsiy rejangiz tayyor!").replace(/\n/g, "<br>");
+          st.exercises = parsed.exercises.map((ex) => ({
+            name: ex.name || "Mashq",
+            ytQuery: ex.ytQuery || (ex.name + " exercise form"),
+            sets: ex.sets || "3 x 12",
+            rest: ex.rest || "60s",
+            kcal: Number(ex.kcal) || 50,
+            done: false,
+            tip: ""
+          }));
+          if (Array.isArray(parsed.meals) && parsed.meals.length) {
+            st.suggestedMeals = parsed.meals;
+          }
+        } else {
+          st.aiAdvice = escapeHtml(reply).replace(/\n/g, "<br>");
+        }
+      } catch (err) {
+        const fb = buildLocalFallbackPlan();
+        st.aiAdvice = fb.advice;
+        st.exercises = fb.exercises;
+        st.suggestedMeals = fb.meals;
+      } finally {
+        saveState();
+        setTimerSeconds(mins * 60);
+        renderAll();
+        showToast("✨ Shaxsiy Reja va Menyu yangilandi!");
+        btn.disabled = false;
+        btn.textContent = (I18N[st.lang] || I18N.uz).genBtn;
+      }
     }
 
-    function toggleTimer() {
-      const d = L[st.lang] || L.uz;
-      const btn = document.getElementById("btn-timer-toggle");
-      if (on) {
-        clearInterval(tid);
-        on = false;
-        btn.textContent = d.start;
-        document.getElementById("clock-sub").textContent = d.ready;
+    async function askExerciseTip(idx) {
+      const ex = st.exercises[idx];
+      if (!ex) return;
+      const tipBox = document.getElementById(`ex-tip-${idx}`);
+      if (tipBox.classList.contains("open")) {
+        tipBox.classList.remove("open");
         return;
       }
-      on = true;
-      btn.textContent = d.pause;
-      document.getElementById("clock-sub").textContent = d.running;
-      tid = setInterval(() => {
-        if (left > 0) {
-          left--;
-          paintRing();
-        } else {
-          resetClock();
-          haptic("success");
-          showToast("Mashg‘ulot taymeri yakunlandi!");
+      tipBox.classList.add("open");
+      if (ex.tip) {
+        tipBox.innerHTML = `💡 ${escapeHtml(ex.tip)}`;
+        return;
+      }
+      tipBox.textContent = "⏳ AI texnikani yozmoqda...";
+      try {
+        const reply = await callGroqBackend(`"${ex.name}" mashqini to'g'ri bajarish texnikasi va nafas olish qoidasini o'zbek tilida 2 jumlada tushuntir.`);
+        ex.tip = reply;
+        saveState();
+        tipBox.innerHTML = `💡 ${escapeHtml(reply)}`;
+      } catch (e) {
+        ex.tip = "Belni tekis tuting, harakatni shoshmasdan nazorat bilan bajaring va kuchlanishda nafas chiqaring.";
+        saveState();
+        tipBox.innerHTML = `💡 ${escapeHtml(ex.tip)}`;
+      }
+    }
+
+    function toggleExerciseDone(idx) {
+      st.exercises[idx].done = !st.exercises[idx].done;
+      saveState();
+      renderAll();
+    }
+
+    /* =========================================================================
+       7. PSYCHOLOGY & MINDSET ARENA (PROGRESSIVE STAGES, AI & STROOP DUEL)
+       ========================================================================= */
+    function renderMindSection() {
+      const xp = st.mindXp || 0;
+      const stageNum = Math.floor(xp / 100) + 1;
+      const stageNames = [
+        "1-bosqich: Impuls Nazorati",
+        "2-bosqich: Kognitiv Qayta Ramkalash",
+        "3-bosqich: Strategik Tafakkur",
+        "4-bosqich: Emotsional Intellekt",
+        "5-bosqich: Neyro-Plastiklik Ustasi"
+      ];
+      const title = stageNames[Math.min(stageNames.length - 1, stageNum - 1)];
+      const remXp = 100 - (xp % 100);
+
+      document.getElementById("mind-lvl-title").textContent = title;
+      document.getElementById("mind-xp-badge").textContent = `${xp} XP`;
+      document.getElementById("mind-xp-bar").style.width = `${Math.max(8, xp % 100)}%`;
+      document.getElementById("mind-stage-desc").textContent = `Keyingi bosqichgacha: ${remXp} XP`;
+
+      const task = MIND_TASKS[(st.mindTaskIdx || 0) % MIND_TASKS.length];
+      document.getElementById("mind-task-tag").textContent = task.stage.toUpperCase();
+      document.getElementById("mind-task-question").textContent = task.q;
+
+      const noteBox = document.getElementById("mind-task-note");
+      noteBox.classList.remove("open");
+      noteBox.textContent = "";
+
+      const optBox = document.getElementById("mind-task-options");
+      optBox.innerHTML = "";
+      task.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mind-opt-btn";
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+          optBox.querySelectorAll("button").forEach((b) => (b.disabled = true));
+          btn.classList.add(opt.ok ? "correct" : "wrong");
+          noteBox.textContent = (opt.ok ? "✅ " : "💡 ") + opt.note;
+          noteBox.classList.add("open");
+          if (opt.ok) {
+            st.mindXp = (st.mindXp || 0) + 35;
+            saveState();
+            renderMindSection();
+            renderAll();
+          }
+          showToast(opt.ok ? "✅ +35 XP qo‘shildi!" : "💡 Psixolog izohini o‘qing");
+        };
+        optBox.appendChild(btn);
+      });
+
+      // Competitive Leaderboard
+      const rivals = [
+        { name: "Sardor_Strateg", xp: 340 },
+        { name: "Madina_EQ", xp: 245 },
+        { name: "Jasur_Stoic", xp: 140 },
+        { name: `${userFirstName} (Siz)`, xp: xp, isMe: true },
+        { name: "Bekzod_99", xp: 55 },
+        { name: "Dilnoza_Mind", xp: 20 }
+      ].sort((a, b) => b.xp - a.xp);
+
+      const myRank = rivals.findIndex((r) => r.isMe) + 1;
+      document.getElementById("mind-rank-lbl").textContent = `Liga o‘rni: #${myRank}`;
+      document.getElementById("home-mind-sub").textContent = `${stageNum}-bosqich • ${xp} XP • Reytingda #${myRank} o‘rin`;
+
+      const lbBox = document.getElementById("mind-leaderboard");
+      lbBox.innerHTML = "";
+      rivals.forEach((r, idx) => {
+        const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
+        const row = document.createElement("div");
+        row.className = "lb-row" + (r.isMe ? " me" : "");
+        row.innerHTML = `<span><b>${medal}</b> ${escapeHtml(r.name)}</span><strong style="color:var(--gold);">${r.xp} XP</strong>`;
+        lbBox.appendChild(row);
+      });
+    }
+
+    function loadNextMindTask() {
+      st.mindTaskIdx = ((st.mindTaskIdx || 0) + 1) % MIND_TASKS.length;
+      saveState();
+      renderMindSection();
+    }
+
+    async function evaluateMindWithAi() {
+      const inp = document.getElementById("mind-user-thought");
+      const val = (inp.value || "").trim();
+      if (!val) {
+        showToast("Avval fikringizni yozing");
+        return;
+      }
+      const btn = document.getElementById("btn-mind-ai");
+      const fb = document.getElementById("mind-ai-feedback");
+      const task = MIND_TASKS[(st.mindTaskIdx || 0) % MIND_TASKS.length];
+
+      btn.disabled = true;
+      btn.textContent = "⏳...";
+      fb.style.display = "block";
+      fb.textContent = "⏳ AI Psixolog fikrlash uslubingizni tahlil qilmoqda...";
+
+      let analysisText = "";
+      try {
+        analysisText = await callGroqBackend(
+          `Sen kuchli amaliy psixolog va kognitiv murabbiysan. Savol: "${task.q}". Foydalanuvchining javobi: "${val}". ` +
+          `O'zbek tilida 3 jumlada uning fikrlashidagi kuchli tomonni va tafakkurini yanada o'stirish uchun aniq psixologik tavsiya ber.`
+        );
+      } catch (e) {
+        analysisText =
+          "Siz vaziyatga hissiyot bilan emas, tahliliy yondashdingiz — bu prefrontal nazoratning kuchli belgisi. " +
+          "Keyingi qadamda ushbu qarorning 1 haftalik natijasini kuzatib boring va o‘zingizga qayta baho bering.";
+      }
+
+      st.mindXp = (st.mindXp || 0) + 40;
+      saveState();
+      inp.value = "";
+      fb.innerHTML = `🧠 <b>AI Psixolog tahlili (+40 XP):</b><br>${escapeHtml(analysisText)}`;
+      renderMindSection();
+      renderAll();
+      showToast("✨ +40 XP qo‘shildi!");
+      btn.disabled = false;
+      btn.textContent = "AI Tahlil";
+    }
+
+    /* 30s Stroop Color-Ink Blitz Duel */
+    let blitzActive = false;
+    let blitzSec = 30;
+    let blitzScore = 0;
+    let blitzTargetColor = "red";
+    let blitzInterval = null;
+
+    function nextBlitzRound() {
+      const colors = [
+        { code: "red", label: "QIZIL", hex: "#ef4444" },
+        { code: "green", label: "YASHIL", hex: "#10b981" },
+        { code: "blue", label: "KO‘K", hex: "#3b82f6" }
+      ];
+      const wordObj = colors[Math.floor(Math.random() * colors.length)];
+      const inkObj = colors[Math.floor(Math.random() * colors.length)];
+      blitzTargetColor = inkObj.code;
+      const wEl = document.getElementById("blitz-word");
+      wEl.textContent = wordObj.label;
+      wEl.style.color = inkObj.hex;
+    }
+
+    function startBlitzDuel() {
+      if (blitzActive) return;
+      blitzActive = true;
+      blitzSec = 30;
+      blitzScore = 0;
+      document.getElementById("blitz-timer-lbl").textContent = "30s • 0 ball";
+      document.getElementById("btn-start-blitz").style.display = "none";
+      document.getElementById("blitz-stage").style.display = "block";
+      nextBlitzRound();
+
+      blitzInterval = setInterval(() => {
+        blitzSec--;
+        document.getElementById("blitz-timer-lbl").textContent = `${blitzSec}s • ${blitzScore} ball`;
+        if (blitzSec <= 0) {
+          clearInterval(blitzInterval);
+          blitzActive = false;
+          document.getElementById("blitz-stage").style.display = "none";
+          document.getElementById("btn-start-blitz").style.display = "block";
+          const earned = Math.max(15, blitzScore * 5);
+          st.mindXp = (st.mindXp || 0) + earned;
+          saveState();
+          renderMindSection();
+          renderAll();
+          showToast(`🏆 Duel tugadi! ${blitzScore} ball (+${earned} XP)`);
         }
       }, 1000);
     }
 
-    function renderWorkouts() {
-      const list = document.getElementById("workout-list");
-      const baseItems = WORKOUTS[st.place] || WORKOUTS.home;
-      const noteLow = (st.userNote || "").toLowerCase();
-      const hasKneePain = noteLow.includes("tizza") || noteLow.includes("oyoq");
-      const hasBackPain = noteLow.includes("bel");
-      const repScale = st.level === "pro" ? "5 podxod" : st.level === "intermediate" ? "4 podxod" : "3 podxod";
-
-      list.innerHTML = "";
-      baseItems.forEach((ex, idx) => {
-        let title = ex.name;
-        let meta = ex.meta.replace("4 x", repScale + " x").replace("3 x", repScale + " x");
-
-        if (hasKneePain && (title.includes("Sakrash") || title.includes("Prisedaniya") || title.includes("Yugurish"))) {
-          title = "AI Moslashtirilgan: Qo‘l va yelka razminkasi (Tizzaga yuklamasiz)";
-          meta = `${repScale} • Bo‘g‘imlarni asrovchi yumshoq rejim`;
-        } else if (hasBackPain && title.includes("Planka")) {
-          title = "AI Moslashtirilgan: Yengil nafas va cho‘zilish (Bel uchun xavfsiz)";
-          meta = "3 daqiqa • Umurtqa pog‘onasini bo‘shashtirish";
-        }
-
-        const isDone = st.doneEx.includes(idx);
-        const row = document.createElement("div");
-        row.className = "ex-row" + (isDone ? " done" : "");
-        row.innerHTML = `<div><strong>${title}</strong><span>${meta}</span></div><div class="ex-check">${isDone ? "✓" : ""}</div>`;
-        row.onclick = () => {
-          if (st.doneEx.includes(idx)) st.doneEx = st.doneEx.filter((i) => i !== idx);
-          else st.doneEx.push(idx);
-          saveState();
-          renderWorkouts();
-        };
-        list.appendChild(row);
-      });
+    function answerBlitz(chosen) {
+      if (!blitzActive) return;
+      if (chosen === blitzTargetColor) blitzScore++;
+      else blitzScore = Math.max(0, blitzScore - 1);
+      document.getElementById("blitz-timer-lbl").textContent = `${blitzSec}s • ${blitzScore} ball`;
+      nextBlitzRound();
     }
 
-    function searchMusic(presetQuery) {
-      const q = (presetQuery || document.getElementById("music-query").value || "").toLowerCase();
-      const box = document.getElementById("track-list");
-      box.innerHTML = "";
-      TRACKS.filter((t) => !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q) || q.includes("workout"))
-        .forEach((t, idx) => {
-          const row = document.createElement("div");
-          row.className = "track-row" + (currentTrackIdx === idx ? " playing" : "");
-          row.innerHTML = `<div><strong>${t.title}</strong><span>${t.artist}</span></div><button class="btn-soft">${currentTrackIdx === idx ? "⏸" : "▶"}</button>`;
-          row.onclick = () => playTrack(idx, t);
-          box.appendChild(row);
-        });
-    }
-
-    function playTrack(idx, track) {
-      const audio = document.getElementById("real-audio");
-      if (currentTrackIdx === idx && !audio.paused) {
-        audio.pause();
-        currentTrackIdx = -1;
-        searchMusic();
-        return;
+    function challengeFriendTelegram() {
+      const shareText = encodeURIComponent(`🧠 Men FITMANI Tafakkur Arenasida ${st.mindXp || 0} XP to‘pladim! Qani, diqqat va mantiq duelida mendan o‘ta olasanmi?`);
+      const shareUrl = `https://t.me/share/url?url=https://t.me/Fitmani_bot&text=${shareText}`;
+      if (tg && typeof tg.openTelegramLink === "function" && tg.initData && tg.initData.length > 0) {
+        try {
+          tg.openTelegramLink(shareUrl);
+          return;
+        } catch (e) {}
       }
-      currentTrackIdx = idx;
-      audio.src = track.url;
-      audio.play().catch(() => {});
-      searchMusic();
-      showToast(`Ijro: ${track.title}`);
+      window.open(shareUrl, "_blank", "noopener,noreferrer");
     }
 
-    function loadLocalMp3(input) {
-      const file = input.files && input.files[0];
-      if (!file) return;
-      const audio = document.getElementById("real-audio");
-      audio.src = URL.createObjectURL(file);
-      audio.play().catch(() => {});
-      showToast(`MP3 yuklandi: ${file.name}`);
+    /* =========================================================================
+       8. MEAL AI & LOCAL NUTRITION ESTIMATION FALLBACK
+       ========================================================================= */
+    function estimateMealLocally(text) {
+      const low = String(text || "").toLowerCase();
+      const presets = [
+        { k: ["osh", "palov", "плов"], kcal: 610, p: 22, f: 24, c: 74 },
+        { k: ["somsa", "самса"], kcal: 385, p: 15, f: 20, c: 36 },
+        { k: ["manti", "манты"], kcal: 440, p: 22, f: 16, c: 48 },
+        { k: ["lag'mon", "lagmon", "лагман"], kcal: 490, p: 21, f: 15, c: 64 },
+        { k: ["mastava", "мастава"], kcal: 330, p: 16, f: 12, c: 39 },
+        { k: ["sho'rva", "shorva", "шурпа"], kcal: 310, p: 19, f: 13, c: 28 },
+        { k: ["shashlik", "kabob", "шашлык"], kcal: 510, p: 38, f: 26, c: 12 },
+        { k: ["tovuq", "куриц"], kcal: 390, p: 44, f: 9, c: 28 },
+        { k: ["tuxum", "яйц"], kcal: 240, p: 19, f: 15, c: 4 },
+        { k: ["tvorog", "творог"], kcal: 230, p: 28, f: 6, c: 10 },
+        { k: ["salat", "салат"], kcal: 125, p: 3, f: 6, c: 14 }
+      ];
+      for (const item of presets) {
+        if (item.k.some((w) => low.includes(w))) {
+          return { name: text.trim(), kcal: item.kcal, p: item.p, f: item.f, c: item.c };
+        }
+      }
+      return { name: text.trim(), kcal: 340, p: 18, f: 12, c: 38 };
     }
 
-    function quickAddFood(name, kcal) {
-      st.foodLog.push({ name, kcal });
+    async function analyzeMealWithAi() {
+      const inp = document.getElementById("ai-meal-input");
+      const text = (inp.value || "").trim();
+      if (!text) return;
+      const btn = document.getElementById("btn-ai-meal");
+      btn.disabled = true;
+      btn.textContent = "⏳...";
+
+      let meal = null;
+      try {
+        const reply = await callGroqBackend(`Quyidagi taom kaloriyasini hisobla: "${text}". FAQAT JSON qaytar: {"name": "Taom", "kcal": 450, "p": 25, "f": 15, "c": 50}`);
+        const parsed = extractJson(reply);
+        if (parsed && parsed.kcal) {
+          meal = {
+            name: parsed.name || text,
+            kcal: Math.round(Number(parsed.kcal) || 300),
+            p: Math.round(Number(parsed.p) || 15),
+            f: Math.round(Number(parsed.f) || 10),
+            c: Math.round(Number(parsed.c) || 35)
+          };
+        }
+      } catch (e) {
+        meal = null;
+      }
+
+      if (!meal) meal = estimateMealLocally(text);
+
+      st.foodLog.unshift(meal);
+      inp.value = "";
       saveState();
-      renderFoodLog();
-      render();
-      showToast(`+${kcal} kkal qo‘shildi`);
+      renderAll();
+      showToast(`+${meal.kcal} kkal qo‘shildi!`);
+      btn.disabled = false;
+      btn.textContent = (I18N[st.lang] || I18N.uz).calcBtn;
     }
 
-    function addFood() {
-      const name = document.getElementById("food-name").value.trim();
-      const kcal = parseInt(document.getElementById("food-kcal").value, 10);
-      if (!name || !kcal) return;
-      st.foodLog.push({ name, kcal });
+    function addMealFromSuggestion(idx) {
+      const m = st.suggestedMeals[idx];
+      if (!m) return;
+      st.foodLog.unshift({ ...m });
       saveState();
-      document.getElementById("food-name").value = "";
-      document.getElementById("food-kcal").value = "";
-      renderFoodLog();
-      render();
+      renderAll();
+      showToast(`+${m.kcal} kkal qo‘shildi`);
     }
 
-    function renderFoodLog() {
-      const box = document.getElementById("food-log-list");
-      const { kcal: targetKcal } = calcTargets();
-      let eaten = 0;
-      box.innerHTML = "";
-      st.foodLog.forEach((f, idx) => {
-        eaten += f.kcal;
-        const row = document.createElement("div");
-        row.className = "food-row";
-        row.innerHTML = `<span>${f.name}</span><span>${f.kcal} kkal <button class="btn-soft" style="padding:2px 7px;margin-left:6px" onclick="removeFood(${idx})">✕</button></span>`;
-        box.appendChild(row);
-      });
-      document.getElementById("st-eaten-kcal").textContent = eaten;
-      const rem = Math.max(0, targetKcal - eaten);
-      document.getElementById("food-remain-badge").textContent = `Qoldi: ${rem} kkal`;
-    }
-
-    function removeFood(idx) {
+    function removeLoggedFood(idx) {
       st.foodLog.splice(idx, 1);
       saveState();
-      renderFoodLog();
-      render();
+      renderAll();
     }
 
-    function scrollToSec(id, btn) {
-      document.querySelectorAll(".dock-btn").forEach((b) => b.classList.remove("active"));
-      if (btn) btn.classList.add("active");
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    /* =========================================================================
+       9. WORKOUT INTERVAL TIMER
+       ========================================================================= */
+    const TIMER_CIRC = 2 * Math.PI * 68;
+    const timerFg = document.getElementById("timer-fg");
+    timerFg.style.strokeDasharray = TIMER_CIRC;
+    let totalSec = 30 * 60;
+    let leftSec = totalSec;
+    let timerId = null;
+    let timerRunning = false;
+
+    function playBellSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.55);
+        gain.gain.setValueAtTime(0.28, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.6);
+      } catch (e) {}
     }
 
-    function render() {
-      const d = L[st.lang] || L.uz;
-      const { kcal, mins, protein, fats, carbs } = calcTargets();
-      applySpotMode();
+    function paintTimer() {
+      const mm = String(Math.floor(leftSec / 60)).padStart(2, "0");
+      const ss = String(leftSec % 60).padStart(2, "0");
+      document.getElementById("timer-clock").textContent = `${mm}:${ss}`;
+      timerFg.style.strokeDashoffset = TIMER_CIRC * (1 - (totalSec > 0 ? leftSec / totalSec : 0));
+    }
 
+    function setTimerSeconds(sec) {
+      totalSec = sec;
+      resetTimer();
+    }
+
+    function resetTimer() {
+      clearInterval(timerId);
+      timerRunning = false;
+      leftSec = totalSec;
+      document.getElementById("btn-timer-start").textContent = "Boshlash";
+      document.getElementById("timer-status").textContent = "TAYYOR";
+      paintTimer();
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById("btn-timer-start");
+      if (timerRunning) {
+        clearInterval(timerId);
+        timerRunning = false;
+        btn.textContent = "Boshlash";
+        document.getElementById("timer-status").textContent = "PAUZA";
+        return;
+      }
+      timerRunning = true;
+      btn.textContent = "Pauza";
+      document.getElementById("timer-status").textContent = "JARAYONDA";
+      timerId = setInterval(() => {
+        if (leftSec > 0) {
+          leftSec--;
+          paintTimer();
+        } else {
+          resetTimer();
+          playBellSound();
+          showToast("🔔 Taymer tugadi!");
+        }
+      }, 1000);
+    }
+
+    /* =========================================================================
+       10. ONLINE WORKOUT MUSIC (ITUNES SEARCH API)
+       ========================================================================= */
+    let activeTrackUrl = "";
+
+    function quickMusicSearch(q) {
+      document.getElementById("music-search-in").value = q;
+      searchOnlineTracks();
+    }
+
+    async function searchOnlineTracks() {
+      const q = (document.getElementById("music-search-in").value || "workout phonk").trim();
+      const box = document.getElementById("music-tracks-container");
+      box.innerHTML = `<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">⏳ Qidirilmoqda...</p>`;
+      try {
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=6`);
+        const json = await res.json();
+        const tracks = (json.results || []).filter((r) => r.previewUrl);
+        box.innerHTML = "";
+        if (!tracks.length) {
+          box.innerHTML = `<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Trek topilmadi, boshqa so‘z bilan qidiring.</p>`;
+          return;
+        }
+        tracks.forEach((tr) => {
+          const row = document.createElement("div");
+          row.className = "track-card" + (activeTrackUrl === tr.previewUrl ? " playing" : "");
+          row.innerHTML = `
+            <img class="track-art" src="${escapeHtml(tr.artworkUrl100)}" alt="" onerror="this.style.display='none'" />
+            <div style="flex:1;min-width:0;">
+              <strong style="display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(tr.trackName)}</strong>
+              <span style="font-size:11px;color:var(--text-muted);">${escapeHtml(tr.artistName)}</span>
+            </div>
+            <span class="tag">${activeTrackUrl === tr.previewUrl ? "⏸" : "▶"}</span>
+          `;
+          row.onclick = () => {
+            const audio = document.getElementById("audio-player");
+            if (activeTrackUrl === tr.previewUrl && !audio.paused) {
+              audio.pause();
+              activeTrackUrl = "";
+            } else {
+              activeTrackUrl = tr.previewUrl;
+              audio.src = tr.previewUrl;
+              audio.play().catch(() => {});
+            }
+            searchOnlineTracks();
+          };
+          box.appendChild(row);
+        });
+      } catch (e) {
+        box.innerHTML = `<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Internet ulanishini tekshiring.</p>`;
+      }
+    }
+
+    /* =========================================================================
+       11. MASTER RENDER FUNCTION
+       ========================================================================= */
+    function renderAll() {
+      applyTheme();
+      const d = I18N[st.lang] || I18N.uz;
+      const { kcal, p, f, c, mins } = calcTargets();
+      const eaten = st.foodLog.reduce((s, item) => s + (item.kcal || 0), 0);
+      const eatenP = st.foodLog.reduce((s, item) => s + (item.p || 0), 0);
+      const eatenF = st.foodLog.reduce((s, item) => s + (item.f || 0), 0);
+      const eatenC = st.foodLog.reduce((s, item) => s + (item.c || 0), 0);
+      const remKcal = Math.max(0, kcal - eaten);
+
+      // Texts & Localization
       document.getElementById("t-tagline").textContent = d.tagline;
-      document.getElementById("t-hello").textContent = d.hello(uname);
-      document.getElementById("t-sub").textContent = d.sub;
-      document.getElementById("t-streak").textContent = `🔥 ${st.streak || 1} kun streak`;
-      document.getElementById("lbl-norma").textContent = d.norma;
-      document.getElementById("lbl-eaten").textContent = d.eaten;
-      document.getElementById("lbl-dur").textContent = d.dur;
-      document.getElementById("lbl-macro-p").textContent = d.macroP;
-      document.getElementById("lbl-macro-f").textContent = d.macroF;
-      document.getElementById("lbl-macro-c").textContent = d.macroC;
+      document.getElementById("t-greeting").textContent = d.greeting(userFirstName);
+      document.getElementById("t-streak").textContent = `🔥 ${st.streak} ${d.dayUnit}`;
+      const goalName = st.goal === "bulk" ? d.goalBulk : st.goal === "fit" ? d.goalFit : d.goalCut;
+      document.getElementById("t-goal-summary").textContent = d.goalSummary(goalName, kcal);
+      document.getElementById("t-kcal-rem").textContent = d.kcalRem;
+      document.getElementById("t-p-lbl").textContent = d.pLbl;
+      document.getElementById("t-f-lbl").textContent = d.fLbl;
+      document.getElementById("t-c-lbl").textContent = d.cLbl;
 
-      document.getElementById("t-goal-title").textContent = d.goalTitle;
+      document.getElementById("t-mind-badge").textContent = d.mindBadge;
+      document.getElementById("t-mind-banner-title").textContent = d.mindBannerTitle;
+      document.getElementById("t-mind-enter").textContent = d.mindEnter;
+      document.getElementById("t-water-title").textContent = d.waterTitle;
+      document.getElementById("t-card-ex").textContent = d.cardEx;
+      document.getElementById("t-card-ex-sub").textContent = d.cardExSub;
+      document.getElementById("t-card-ai").textContent = d.cardAi;
+      document.getElementById("t-card-ai-val").textContent = d.cardAiVal;
+      document.getElementById("t-card-ai-sub").textContent = d.cardAiSub;
+      document.getElementById("t-coach-head").textContent = d.coachHead;
+
+      document.getElementById("t-ai-title").textContent = d.aiTitle;
       document.getElementById("lbl-male").textContent = d.male;
       document.getElementById("lbl-female").textContent = d.female;
       document.getElementById("lbl-cut").textContent = d.cut;
@@ -1354,75 +2116,160 @@
       document.getElementById("lbl-age").textContent = d.age;
       document.getElementById("lbl-weight").textContent = d.weight;
       document.getElementById("lbl-height").textContent = d.height;
-      document.getElementById("btn-save-prof").textContent = d.aiBtn;
+      document.getElementById("lbl-note").textContent = d.note;
+      document.getElementById("btn-gen-ai").textContent = d.genBtn;
+      document.getElementById("t-ai-res").textContent = d.aiRes;
 
       document.getElementById("t-timer-title").textContent = d.timerTitle;
-      document.getElementById("btn-timer-reset").textContent = d.reset;
-      document.getElementById("btn-plan-min").textContent = `${mins}m`;
-      document.getElementById("t-music-title").textContent = d.musicTitle;
-      document.getElementById("btn-upload-mp3").textContent = d.uploadMp3;
-      document.getElementById("btn-search-music").textContent = d.searchBtn;
+      document.getElementById("t-ex-title").textContent = d.exTitle;
       document.getElementById("t-food-title").textContent = d.foodTitle;
-      document.getElementById("btn-add-food").textContent = d.addBtn;
+      document.getElementById("btn-ai-meal").textContent = d.calcBtn;
+      document.getElementById("t-logged-title").textContent = d.loggedTitle;
+      document.getElementById("t-music-title").textContent = d.musicTitle;
+      document.getElementById("btn-music-search").textContent = d.searchBtn;
 
-      document.getElementById("nav-home").textContent = d.navHome;
-      document.getElementById("nav-timer").textContent = d.navTimer;
-      document.getElementById("nav-music").textContent = d.navMusic;
-      document.getElementById("nav-food").textContent = d.navFood;
-
-      document.getElementById("st-target-kcal").textContent = kcal;
-      document.getElementById("st-session-min").textContent = `${mins} daq`;
-      document.getElementById("st-macro-p").textContent = `${protein}g`;
-      document.getElementById("st-macro-f").textContent = `${fats}g`;
-      document.getElementById("st-macro-c").textContent = `${carbs}g`;
-      document.getElementById("t-timer-mode").textContent = `${mins} daqiqa reja`;
-
-      const lvlIcon = st.level === "pro" ? "🔥" : st.level === "intermediate" ? "⚡" : "🌱";
-      const lvlText = st.level === "pro" ? "Pro" : st.level === "intermediate" ? "O‘rta" : "Boshlang‘ich";
-      const lvlBtn = document.getElementById("btn-level-toggle");
-      if (lvlBtn) lvlBtn.innerHTML = `<span>${lvlIcon}</span><b>${lvlText}</b>`;
-
-      const adviceBox = document.getElementById("ai-advice-box");
-      if (st.aiPlanText) {
-        adviceBox.innerHTML = formatAiText(st.aiPlanText);
-      } else {
-        const noteExtra = st.userNote ? ` Sizning izohingiz («${st.userNote}») asosida mashqlar moslashtiriladi.` : "";
-        adviceBox.textContent =
-          `AI Murabbiy (${st.gender === "female" ? d.female : d.male}, ${st.age} yosh, ${st.height} sm, ${st.weight} kg): Kunlik ${kcal} kkal (${protein}g oqsil, ${fats}g yog‘, ${carbs}g uglevod) va ${mins} daqiqalik reja.${noteExtra} Jonli AI menyu va mashqlarni olish uchun "✨ AI Reja" tugmasini bosing.`;
-      }
-
-      document.querySelectorAll("#gender-grid [data-gender]").forEach((c) => {
-        c.classList.toggle("active", c.dataset.gender === st.gender);
+      ["t-doc-home", "t-doc-ai", "t-doc-workout", "t-doc-food"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = d.docDisclaimer;
       });
-      document.querySelectorAll("#goal-grid .choice-card").forEach((c) => {
-        c.classList.toggle("active", c.dataset.goal === st.goal);
-      });
-      document.querySelectorAll("#place-grid .choice-card").forEach((c) => {
-        c.classList.toggle("active", c.dataset.place === st.place);
+      d.nav.forEach((lbl, idx) => {
+        const el = document.getElementById(`nav-${idx}`);
+        if (el) el.textContent = lbl;
       });
 
-      renderWorkouts();
-      renderFoodLog();
+      // Calorie Ring & Macros
+      document.getElementById("hud-kcal-left").textContent = remKcal;
+      const kcalCirc = 2 * Math.PI * 50;
+      const kcalFg = document.getElementById("hud-kcal-fg");
+      kcalFg.style.strokeDasharray = kcalCirc;
+      kcalFg.style.strokeDashoffset = kcalCirc * (1 - Math.min(1, eaten / Math.max(1, kcal)));
+
+      document.getElementById("hud-p-val").textContent = `${eatenP} / ${p}g`;
+      document.getElementById("hud-f-val").textContent = `${eatenF} / ${f}g`;
+      document.getElementById("hud-c-val").textContent = `${eatenC} / ${c}g`;
+      document.getElementById("bar-p").style.width = `${Math.min(100, (eatenP / p) * 100)}%`;
+      document.getElementById("bar-f").style.width = `${Math.min(100, (eatenF / f) * 100)}%`;
+      document.getElementById("bar-c").style.width = `${Math.min(100, (eatenC / c) * 100)}%`;
+
+      document.getElementById("water-val-lbl").textContent = `${st.waterMl} / 2500 ml`;
+      document.getElementById("water-bar").style.width = `${Math.min(100, (st.waterMl / 2500) * 100)}%`;
+
+      const doneExCount = st.exercises.filter((e) => e.done).length;
+      document.getElementById("hud-ex-done").textContent = `${doneExCount} / ${st.exercises.length}`;
+      document.getElementById("ex-progress-tag").textContent = `${doneExCount} / ${st.exercises.length} bajarildi`;
+      document.getElementById("timer-badge").textContent = `${mins} daqiqa`;
+      document.getElementById("btn-full-min").textContent = `${mins}m`;
+
+      const adviceHtml = st.aiAdvice || `Kunlik normangiz: <b>${kcal} kkal</b> (${p}g oqsil, ${f}g yog‘, ${c}g uglevod). Shaxsiy menyu va mashqlar uchun <b>AI Reja</b> bo‘limidan foydalaning.`;
+      document.getElementById("home-ai-advice").innerHTML = adviceHtml;
+      document.getElementById("ai-full-advice").innerHTML = adviceHtml;
+
+      const lvlNames = { beginner: "Boshlang‘ich", intermediate: "O‘rta", pro: "Pro" };
+      const lvlIcons = { beginner: "🌱", intermediate: "⚡", pro: "🔥" };
+      document.getElementById("lvl-chip").innerHTML = `<span>${lvlIcons[st.level]}</span><b>${lvlNames[st.level]}</b>`;
+
+      document.querySelectorAll("[data-gender]").forEach((el) => el.classList.toggle("active", el.dataset.gender === st.gender));
+      document.querySelectorAll("[data-goal]").forEach((el) => el.classList.toggle("active", el.dataset.goal === st.goal));
+      document.querySelectorAll("[data-place]").forEach((el) => el.classList.toggle("active", el.dataset.place === st.place));
+
+      // Render Exercises with Bulletproof Mobile YouTube Links & Safe Copy
+      const exBox = document.getElementById("exercise-container");
+      exBox.innerHTML = "";
+      st.exercises.forEach((ex, i) => {
+        const ytSearchUrl = `https://m.youtube.com/results?search_query=${encodeURIComponent(ex.ytQuery || (ex.name + " exercise"))}`;
+        const card = document.createElement("div");
+        card.className = "ex-card" + (ex.done ? " done" : "");
+
+        const topDiv = document.createElement("div");
+        topDiv.className = "ex-top";
+        topDiv.innerHTML = `
+          <div style="flex:1;min-width:0;">
+            <div class="ex-title">${escapeHtml(ex.name)}</div>
+            <div class="ex-meta">${escapeHtml(ex.sets)} • Dam: ${escapeHtml(ex.rest)} • ~${ex.kcal} kkal</div>
+          </div>
+        `;
+        const chk = document.createElement("div");
+        chk.className = "check-circle";
+        chk.textContent = ex.done ? "✓" : "";
+        chk.onclick = () => toggleExerciseDone(i);
+        topDiv.appendChild(chk);
+
+        const actDiv = document.createElement("div");
+        actDiv.className = "ex-actions";
+
+        const ytLink = document.createElement("a");
+        ytLink.className = "yt-anchor";
+        ytLink.href = ytSearchUrl;
+        ytLink.target = "_blank";
+        ytLink.rel = "noopener noreferrer";
+        ytLink.textContent = "▶️ YouTube";
+        ytLink.onclick = (e) => openYtBulletproof(e, ytLink);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "btn-ghost";
+        copyBtn.textContent = "🔗 Nusxa";
+        copyBtn.onclick = () => copyTextSafe(ytSearchUrl);
+
+        const tipBtn = document.createElement("button");
+        tipBtn.type = "button";
+        tipBtn.className = "btn-ghost";
+        tipBtn.textContent = "💡 Texnika";
+        tipBtn.onclick = () => askExerciseTip(i);
+
+        actDiv.appendChild(ytLink);
+        actDiv.appendChild(copyBtn);
+        actDiv.appendChild(tipBtn);
+
+        const tipBox = document.createElement("div");
+        tipBox.className = "ex-tip-box";
+        tipBox.id = `ex-tip-${i}`;
+
+        card.appendChild(topDiv);
+        card.appendChild(actDiv);
+        card.appendChild(tipBox);
+        exBox.appendChild(card);
+      });
+
+      // Food Suggestions & Log
+      const sugBox = document.getElementById("ai-suggested-meals");
+      sugBox.innerHTML = "";
+      st.suggestedMeals.forEach((m, i) => {
+        const row = document.createElement("div");
+        row.className = "food-item";
+        row.innerHTML = `
+          <div style="flex:1;min-width:0;"><strong>${escapeHtml(m.name)}</strong><small>${m.kcal} kkal • P:${m.p}g • F:${m.f}g • C:${m.c}g</small></div>
+          <button type="button" class="btn-ghost" style="color:var(--emerald);" onclick="addMealFromSuggestion(${i})">+ Qo‘shish</button>
+        `;
+        sugBox.appendChild(row);
+      });
+
+      document.getElementById("food-left-tag").textContent = `Qoldi: ${remKcal} kkal`;
+      document.getElementById("food-eaten-tag").textContent = `${eaten} kkal`;
+      const logBox = document.getElementById("food-log-container");
+      logBox.innerHTML = st.foodLog.length ? "" : `<p style="font-size:12px;color:var(--text-muted);">Hali taom qo‘shilmagan.</p>`;
+      st.foodLog.forEach((fItem, i) => {
+        const row = document.createElement("div");
+        row.className = "food-item";
+        row.innerHTML = `
+          <div style="flex:1;min-width:0;"><strong>${escapeHtml(fItem.name)}</strong><small>${fItem.kcal} kkal • P:${fItem.p}g • F:${fItem.f}g • C:${fItem.c}g</small></div>
+          <button type="button" class="btn-ghost" onclick="removeLoggedFood(${i})">✕</button>
+        `;
+        logBox.appendChild(row);
+      });
+
+      renderMindSection();
     }
 
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-      btn.classList.remove("btn-kick");
-      void btn.offsetWidth;
-      btn.classList.add("btn-kick");
-      triggerSpotPulse();
-    });
-
-    document.getElementById("i-age").value = st.age;
-    document.getElementById("i-weight").value = st.weight;
-    document.getElementById("i-height").value = st.height || 175;
-    document.getElementById("i-note").value = st.userNote || "";
+    // Boot
+    document.getElementById("in-age").value = st.age;
+    document.getElementById("in-weight").value = st.weight;
+    document.getElementById("in-height").value = st.height;
+    document.getElementById("in-note").value = st.note || "";
     totalSec = calcTargets().mins * 60;
-    applySpotMode();
-    resetClock();
-    render();
-    searchMusic("workout phonk energy");
+    resetTimer();
+    renderAll();
+    searchOnlineTracks();
   </script>
 </body>
 </html>
